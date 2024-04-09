@@ -1,0 +1,36 @@
+
+
+
+
+.background-navbar {
+    background-color: #00bb1f !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    .logo-container {
+        width: 150px; /* Đảm bảo rằng Navbar.Brand chỉ bao quanh hình ảnh */
+        height: fit-content;
+        padding: 0; /* Loại bỏ padding mặc định của Navbar.Brand */
+    }
+    .logo-img-nav{
+        max-width: 100%; /* Đảm bảo rằng hình ảnh không vượt quá phạm vi của Navbar.Brand */
+        height: auto; /* Đảm bảo tỷ lệ hình ảnh không bị méo */
+    }
+    #basic-nav-dropdown {
+        color: #ffffff;
+        font-size: 20px;
+    }
+    .line-height-64{
+        line-height: 64px;
+    }
+    .text-color {
+        font-size: 20px;
+        color: #ffffff;
+    }
+    .text-color:hover {
+        opacity: 0.5;
+        color: #ffffff;
+    }
+}

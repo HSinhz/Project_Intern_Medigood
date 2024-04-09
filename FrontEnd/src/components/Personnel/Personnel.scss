@@ -1,0 +1,29 @@
+.container {
+    padding-top: 24px;
+    .img-personnel-container {
+        width: 150px; /* Đảm bảo rằng Navbar.Brand chỉ bao quanh hình ảnh */
+        height: fit-content;
+    }
+    .w-60{
+        width: 160px;
+    }
+    .cell-personnel-name{
+        width: 300px;
+        min-width: 300px;
+        max-width: 300px;
+    }
+    .img-personnel{
+        max-width: 100%; /* Đảm bảo rằng hình ảnh không vượt quá phạm vi của Navbar.Brand */
+        height: auto; /* Đảm bảo tỷ lệ hình ảnh không bị méo */
+    }
+    .fs-20{
+        font-size: 20px;
+    }
+    .table td {
+        max-width: 300px; /* Đặt giá trị tùy chỉnh phù hợp với nhu cầu của bạn */
+        overflow: hidden;
+        text-overflow: ellipsis; /* Truncats the text from wrapping */
+        word-wrap: break-word; 
+        vertical-align: middle;
+    }
+}
