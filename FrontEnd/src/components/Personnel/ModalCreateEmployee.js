@@ -1,6 +1,6 @@
 import {Modal} from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 import './Personnel.scss';
@@ -8,91 +8,123 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getPosition } from '../../services/PersonnelService';
 import { getBranch } from '../../services/BranchService';
+import { validateInputEmployee } from '../../utils/validateInputEmployee';
+import {  createPersonal, editPersonal} from '../../services/PersonnelService';
+import moment from 'moment';
+
 const ModalCreateEmployee = (props) => {
-    const {action, dataModalProduct} = props;
-    const defaultProductData = {
-        Name: '',
-        Price: '',
-        ImageUrl: '',
-        Description: '',
-        Category: '',
+    const {action, dataModalEmployee} = props;
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [file, setFile] = useState({});
+    const fileInputRef = useRef(null);
+  
+    const handleFileSelect = (event) => {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      setFile(file);
+      reader.onload = () => {
+        setSelectedImage(reader.result);
+      };
+      
+      reader.readAsDataURL(file);
+
+    };   
+
+    const defaultEmployeeData = {
+        Email: '',
+        LastName: '',
+        FirstName: '',
+        Phone: '',
+        Gender: null,
+        Address: '',
+        Country: '',
+        BranchId: null,
+        PositionId: null,
+        Decscription: ''
     }
     const validInputsDefault = {
-        Name: true,
-        Price: true,
-        ImageUrl: true,
-        Description: true,
-        Category: true
+        Email: true,
+        LastName: true,
+        FirstName: true,
+        Image: true,
+        BirthDay: true,
+        Phone: true,
+        Gender: true,
+        Address: true,
+        Country: true,
+        BranchId: true,
+        PositionId: true,
+        Decscription: true,
     }
+    const [employeeData, setEmployeeData] = useState(defaultEmployeeData);
+    const [validInput, setValidInput] = useState(validInputsDefault);
     const [listPosition, setListPosition] = useState([]);
     const [listBranch, setListBranch] = useState([]);
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [productData, setProductData] = useState(defaultProductData);
-    const [validInputs, setValidInput] = useState(validInputsDefault);
+    const [birthDay, setBirthDay] = useState(null);
     
-    const handleOnchangeInput = (value, name) => {
-        let _productData = _.cloneDeep(productData);
-        _productData[name] = value;
-        setProductData(_productData);
-    }
-
-    const validateProductInput = () => {
-        setValidInput(validInputsDefault);
-        let arr = ['Name', 'Price' , 'ImageUrl' ];
-        let check = true;
-        for( let i = 0 ; i < arr.length ; i++){
-            if( !productData[arr[i]]) {
-                let _validInputs = _.cloneDeep(validInputsDefault);
-                _validInputs[arr[i]] = false;
-                setValidInput({_validInputs});
-                toast.error(`${arr[i]} không được bỏ trống`);
-                check = false;
-                break;
-            }
-        }
-        return check;
-    }
-
-    // const handleConfirmProduct = async () => {
-    //     let check = validateProductInput();
-    //     if( check === true) {
-    //         let response = await createProduct(productData.Name, productData.Price, productData.ImageUrl, productData.Description);
-    //         console.log('>>> Check response Create Product', response.data.Success);
-    //         if( response.data.Success === true){
-    //             toast.success(response.data.Mess)
-    //             props.onHide();
-    //             setProductData(defaultProductData);
-    //         } else {
-    //             toast.error(response.data.Mess)
-    //         }
-    //     }
-    // }
-
     const handleCloseModalProduct = () => {
         props.onHide();
-        setProductData(defaultProductData);
+        setEmployeeData(defaultEmployeeData);
         setValidInput(validInputsDefault);
+        setSelectedImage(null);
+        setBirthDay(null)
+        setFile({});
     }
+    const handleOnChangeInput = (value, name) => {
+        let _employeeData = _.cloneDeep(employeeData);
+        _employeeData[name] = value;
+        setEmployeeData(_employeeData);
+    }
+    const handleCreateEmployee = async () => {
+        console.log("employData: ", dataModalEmployee);
+        let checkValidate = validateInputEmployee(employeeData, validInputsDefault, birthDay, selectedImage);
+        setValidInput(checkValidate._validInputs);
+        if(checkValidate.success === true ){
+            try {
+                let response = null;
+                if( action === "CREATE") {
+                    const formDataCreate = new FormData();
+                    formDataCreate.append('image', file);
+                    formDataCreate.append('employeeData', JSON.stringify(employeeData)); // Thêm employeeData
+                    formDataCreate.append('BirthDay', birthDay); // Thêm selectedDate
+                    console.log("formdata: ", formDataCreate)
+                    response = await createPersonal(formDataCreate);
+                } else {
+                    const formDataEdit = new FormData();
+                    if(selectedImage !== null){
+                        formDataEdit.append('image', file);
+                    }
+                    formDataEdit.append('employeeData', JSON.stringify(employeeData));
+                    formDataEdit.append('BirthDay', birthDay); // Thêm selectedDate
+                    console.log("formdata: ", dataModalEmployee._id)
+                    response = await editPersonal(dataModalEmployee._id, formDataEdit);
+                }
+                if( response && response.Success === true){
+                    toast.success(response.Mess);
+                    setEmployeeData(defaultEmployeeData);
+                    setValidInput(validInputsDefault);
+                    setSelectedImage(null);
+                    setBirthDay(null);
+                    setFile({});
+                    props.onHide();
 
-    // const handleUpdateProduct = async () => {
-    //     let check = validateProductInput();
-    //     console.log("Check dataModalProduct: ", dataModalProduct)
-    //     if( check === true ){
-    //         let response = await updateProduct( dataModalProduct._id, productData.Name, productData.Price, productData.ImageUrl, productData.Description);
-    //         if( response){
-    //             toast.success(response.Mess);
-    //             console.log('>>> Check response Update Employee: ', response);
-    //             props.onHide();
-    //             setProductData(defaultProductData);
-    //         } else {
-    //             toast.error(response.Mess);
-    //         }
-    //     }
-    // }
+                } else {
+                    toast.error(response.Mess);
+                }
+            } catch(error){
+                console.log(error);
+                toast.error("Có lỗi vui lòng thử lại sau");
+            }
+        } else {
+            toast.error(checkValidate.ErrMess)
+        }
+    }
 
     useEffect(() => {
         if( action !== "CREATE") {
-            setProductData(dataModalProduct);
+            setEmployeeData(dataModalEmployee);
+            setBirthDay(dataModalEmployee.BirthDay);
+            setSelectedImage(dataModalEmployee.ImgUrl);
         }
 
         const fetchDataPosition = async () => {
@@ -121,13 +153,14 @@ const ModalCreateEmployee = (props) => {
         }
         fetchDataPosition();
         fetchDataBranch();
-    }, [dataModalProduct])
+    }, [dataModalEmployee])
+
     return (
         <>
             <Modal size="lg" show={props.show} className='modal-user' onHide={() => handleCloseModalProduct()}>
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        <span>{props.action === 'CREATE' ? "Thêm nhân viên" : "Chỉnh sửa sản phẩm"}</span>
+                        <span>{props.action === 'CREATE' ? "Thêm nhân viên" : "Chỉnh sửa nhân viên"}</span>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body >
@@ -135,73 +168,111 @@ const ModalCreateEmployee = (props) => {
                         <div className='col-12 col-sm-7'>
                             <div className='form-group mb-2'>
                                 <label>Email <span className='red'>(*)</span> :</label>
-                                <input className='form-control w-60' type='text' required />
-                                {/* <input className={validInputs.Name ? 'form-control' : 'form-control is-invalid'} type='text' required value={productData.Name}
-                                    onChange={(event) => handleOnchangeInput( event.target.value, "Name" )}
-                                /> */}
+                                <input className={validInput.Email ? 'form-control w-60' : 'form-control is-invalid w-60'} type='text' required 
+                                    value={employeeData.Email}
+                                    onChange={(event) => handleOnChangeInput(event.target.value, 'Email')}
+                                    disabled={action === 'CREATE' ? false : true}
+                                />
                             </div>
                             <div className='form-group mb-2'>
                                 <label>Họ <span className='red'>(*)</span> :</label>
-                                <input className='form-control w-50' type='text' required />
-                                {/* <input className={validInputs.Name ? 'form-control' : 'form-control is-invalid'} type='text' required value={productData.Name}
-                                    onChange={(event) => handleOnchangeInput( event.target.value, "Name" )}
-                                /> */}
+                                <input className={validInput.LastName ? 'form-control w-50' : 'form-control is-invalid w-50'} type='text' required 
+                                    value={employeeData.LastName}
+                                    onChange={(event) => handleOnChangeInput(event.target.value, 'LastName')}
+                                />
+                                
                             </div>
                             <div className='form-group mb-2 '>
                                 <label>Tên <span className='red'>(*)</span> :</label>
                                 <div className='d-flex justify-content-between '>
-                                    <input className='form-control w-50' type='text' required />
-                                    <button className='btn btn-primary'>Chọn ảnh</button>
+                                    <input className={validInput.FirstName ? 'form-control w-50' : 'form-control is-invalid w-50'} type='text' required 
+                                        value={employeeData.FirstName}
+                                        onChange={(event) => handleOnChangeInput(event.target.value, 'FirstName')}
+                                    />
                                 </div>
                             </div>
                         </div>
-                        <div className='col-12 col-sm-5 d-flex align-items-center justify-content-center'>
-                            <img className='img-personnel-container img-personnel img-fluid w-50 d-flex align-items-center justify-content-center' src='https://img.freepik.com/premium-vector/cute-smiling-boy-avatar-flat-style-vector-illustration_710508-1241.jpg'/>
+                        <div className='col-12 col-sm-5 d-flex flex-column align-items-center justify-content-center'>
+                            {action === "CREATE" ? 
+                                (
+                                    selectedImage ? (
+                                        <img className='img-personnel-container img-personnel img-fluid w-50' src={selectedImage} alt="Selected Image" />
+                                    ) : (
+                                        <img className='img-personnel-container img-personnel img-fluid w-50' src='https://img.freepik.com/premium-vector/cute-smiling-boy-avatar-flat-style-vector-illustration_710508-1241.jpg' alt="Default Image" />
+                                    )
+                                )
+                                : 
+                                (
+                                    selectedImage ? (
+                                        <img className='img-personnel-container img-personnel img-fluid w-50' src={selectedImage} alt="Selected Image" />
+                                    ) : (
+                                        <img className='img-personnel-container img-personnel img-fluid w-50' src={employeeData.ImgUrl} alt="Default Image" />
+                                    )
+                                ) 
+                            }
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    style={{ display: 'none' }}
+                                    onChange={handleFileSelect}
+                                />
+                                <button className='mt-2 btn btn-primary' onClick={() => fileInputRef.current.click()}>Chọn ảnh</button>
                         </div>
                         <div className='col-12 col-sm-4 form-group mb-2'>
-                                <label>Số điện thoại </label>
-                                <input className='form-control' type='text' required />
-                                {/* <input className='form-control' type='text'  value={productData.Description}
-                                    onChange={(event) => handleOnchangeInput( event.target.value, "Description" )}
-                                /> */}
+                                <label>Số điện thoại <span className='red'>(*)</span> :</label>
+                                <input className={validInput.Phone ? 'form-control ' : 'form-control is-invalid '} type='text' required 
+                                    value={employeeData.Phone}
+                                    onChange={(event) => handleOnChangeInput(event.target.value, 'Phone')}
+                                />
+
                             </div>
                         <div className='col-12 col-sm-4 form-group mb-2'>
-                            <label>Ngày sinh:</label>
+                            <label>Ngày sinh <span className='red'>(*)</span> :</label>
                             <div>
                                 <DatePicker
-                                    selected={selectedDate}
-                                    onChange={(date) =>[ setSelectedDate(date) , console.log("data: ", date)]}
+                                    selected={birthDay}
+                                    onChange={(date) =>[ setBirthDay(date) , console.log("data: ", date)]}
                                     dateFormat="dd/MM/yyyy"
-                                    className="form-select"
+                                    className={validInput.BirthDay ? 'form-select' : 'form-select is-invalid'}
                                     placeholderText="Năm sinh"
+                                    value={ action !== "CREATE" ? moment(birthDay).local().format('DD-MM-YYYY') : birthDay}
                                 />
                             </div>
                         </div>
                         <div className='col-12 col-sm-4 form-group mb-2'>
                             <label>Giới tính <span className='red'>(*)</span> :</label>
-                            <select className='form-select' > 
-                                <option value={'1'}>Nam</option>
-                                <option value={'2'}>Nữ</option>
-                                <option value={'3'}>Khác</option>
+                            <select className={validInput.Gender ? 'form-select' : 'form-select is-invalid'}
+                                onChange={(event) => handleOnChangeInput(event.target.value, 'Gender')}
+                                value={employeeData.Gender}
+                            > 
+                                <option value={1}>Nam</option>
+                                <option value={2}>Nữ</option>
+                                <option value={3}>Khác</option>
                             </select>
                         </div>
                         <div className='col-12 col-sm-12 form-group mb-2'>
-                            <label>Địa chỉ </label>
-                            <input className='form-control' type='text' required />
-                            {/* <input className='form-control' type='text'  value={productData.Description}
-                                onChange={(event) => handleOnchangeInput( event.target.value, "Description" )}
-                            /> */}
+                            <label>Địa chỉ <span className='red'>(*)</span> :</label>
+                            <input className={validInput.Address ? 'form-control ' : 'form-control is-invalid '} type='text' required 
+                                value={employeeData.Address}
+                                onChange={(event) => handleOnChangeInput(event.target.value, 'Address')}
+                            />
+                            
                         </div>
                         <div className='col-12 col-sm-12 form-group mb-2'>
-                            <label>Quê quán </label>
-                            <input className='form-control ' type='text' required />
-                            {/* <input className='form-control' type='text'  value={productData.Description}
-                                onChange={(event) => handleOnchangeInput( event.target.value, "Description" )}
-                            /> */}
+                            <label>Quê quán <span className='red'>(*)</span> :</label>
+                            <input className={validInput.Country ? 'form-control ' : 'form-control is-invalid '} type='text' required 
+                                value={employeeData.Country}
+                                onChange={(event) => handleOnChangeInput(event.target.value, 'Country')}
+                            />
+                           
                         </div>
                         <div className='col-12 col-sm-6 form-group mb-2'>
-                            <label>Cửa hàng <span className='red'>(*)</span> :</label>
-                            <select className='form-select' > 
+                            <label>Cửa hàng</label>
+                            <select className={validInput.BranchId ? 'form-select' : 'form-select is-invalid'}
+                                onChange={(event) => handleOnChangeInput(event.target.value, 'BranchId')}
+                                value={action !== "CREATE" ? dataModalEmployee.BranchId : employeeData.BranchId}
+                            > 
+                                <option value="">Chi nhánh</option>
                                 {
                                     listBranch && listBranch.length > 0 ? 
                                         <>
@@ -219,7 +290,11 @@ const ModalCreateEmployee = (props) => {
                         </div>
                         <div className='col-12 col-sm-6 form-group mb-2'>
                             <label>Chức vụ <span className='red'>(*)</span> :</label>
-                            <select className='form-select' placeholderText='Chức vụ'> 
+                            <select className={validInput.PositionId ? 'form-select' : 'form-select is-invalid'} placeholderText='Chức vụ'
+                                onChange={(event) => handleOnChangeInput(event.target.value, 'PositionId')}
+                                value={employeeData.PositionId}
+                            > 
+                                <option value="">Chức vụ</option>
                                 {
                                     listPosition ? 
                                     <>
@@ -239,17 +314,22 @@ const ModalCreateEmployee = (props) => {
                         </div>
                         <div className='col-12 col-sm-12 form-group mb-2'>
                             <label>Chú ý </label>
-                            <input className='form-control' type='text' required />
+                            <input className={validInput.Decscription ? 'form-control ' : 'form-control is-invalid '} type='text' required 
+                                value={employeeData.Decscription}
+                                onChange={(event) => handleOnChangeInput(event.target.value, 'Decscription')}
+                            />
                         </div>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    {/* <Button variant='success' 
-                        onClick={ action === "CREATE" ? () => handleConfirmProduct() : () => handleUpdateProduct()  }> 
-                        {action === "CREATE" ? 'Lưu' : 'Cập nhật'} 
-                        
+                    <Button variant='success' 
+                        onClick={ () => handleCreateEmployee()}
+                    >
+                        { action === "CREATE" ? 'Thêm mới' : 'Cập nhật'}
                     </Button>
-                    <Button variant='secondary' onClick={() => handleCloseModalProduct()}>Hủy</Button> */}
+                    <Button variant='secondary'
+                        onClick={() => handleCloseModalProduct()}
+                    >Hủy</Button>
                 </Modal.Footer>
             </Modal>
         </>

@@ -9,6 +9,9 @@ import { BiStore } from "react-icons/bi";
 import { BsPersonLinesFill } from "react-icons/bs";
 import { GiMedicines } from "react-icons/gi";
 import { TbReportAnalytics } from "react-icons/tb";
+import { LuWarehouse } from "react-icons/lu";
+import { AiOutlineBarChart } from "react-icons/ai";
+
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import  logo from '../../assets/images/logo-nav.png';
@@ -34,9 +37,11 @@ const NavWeb = () => {
                         <Nav.Link href="/news" className='nav-link text-color'>Tin tức</Nav.Link>
                         <NavDropdown title="Quản trị" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1" className='fs-5'><span className='m-2'><BiStore/></span> Quản lý cửa hàng</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.2" className='fs-5'><span className='m-2'><TbReportAnalytics/></span>Quản lý doanh thu</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.3" className='fs-5'><span className='m-2'><GiMedicines/></span>Quản lý dược phẩm</NavDropdown.Item>
+                            <NavDropdown.Item href="#action/3.2" className='fs-5'><span className='m-2'><AiOutlineBarChart/></span>Quản lý doanh thu</NavDropdown.Item>
+                            <NavDropdown.Item href="/medicine" className='fs-5'><span className='m-2'><GiMedicines/></span>Quản lý dược phẩm</NavDropdown.Item>
                             <NavDropdown.Item href="/personnel" className='fs-5'><span className='m-2'><BsPersonLinesFill/></span>Quản lý nhân sự</NavDropdown.Item>
+                            <NavDropdown.Item href="#action/3.3" className='fs-5'><span className='m-2'><LuWarehouse/></span>Quản lý kho hàng</NavDropdown.Item>
+
                         </NavDropdown>
                     </Nav>
                     </Navbar.Collapse>

@@ -7,7 +7,7 @@ const checkUserJWT = (req, res, next )=> {
         if( cookies && cookies.AccessToken){
             let decodeAccessToken = verifyJWT(cookies.AccessToken);
             let expiresIn = decodeAccessToken.exp;
-            let check = checkExpiredJWT(expiresIn)
+            let check = checkExpiredJWT(expiresIn);
             if(decodeAccessToken){  // Kiểm tra AccessToken có tồn tại
                 if( check ){ // Kiểm tra thời gian của AccessToken
                     req.user = decodeAccessToken;
@@ -15,11 +15,11 @@ const checkUserJWT = (req, res, next )=> {
                 } else {
                     let data = getRefreshTokenUser(decodeAccessToken, decodeAccessToken.email)
                     if( data&& data.Success === true ){
-                        res.cookie('AccessToken', data.AT, { httpOnly: true, maxAge: 30 * 60 * 1000 });
+                        res.cookie('AccessToken', data.AT, { httpOnly: true});
                         req.user = decodeAccessToken;
                         next();
                     } else if( data && data.Success === false && data.Type == 401){
-                        return res.status(500).json({data: data});
+                        return res.status(data.Type).json({data: data});
                     }
                     next(); // ==> chuyển người dùng tới trang /homme nếu tất cả đã hoàn thành 
                 }
@@ -44,8 +44,11 @@ const checkPermissionUser = ( req, res, next) => {
         if(req.user ){
             let roleUser = req.user.Roles;
             const reversedRoles = [...roleUser].reverse();
+            console.log("req.user.Roles", reversedRoles)
             let uri = req.path;
             uri = uri.substring(0, uri.lastIndexOf('/'));
+            console.log("uri: ", uri);
+
             if( roleUser[0] === '*' ){
                 console.log("this is Boss, welcom Boss")
                 next();

@@ -1,7 +1,3 @@
-
-
-
-
 .background-navbar {
     background-color: #00bb1f !important;
     position: fixed;
@@ -31,6 +27,22 @@
     }
     .text-color:hover {
         opacity: 0.5;
+        color: #ffffff;
+    }
+}
+
+
+// Nav Stored
+
+.background-color-primary{
+    height: 93vh;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+.nav-store {
+    .nav-link:hover {
+        opacity: 0.3;
         color: #ffffff;
     }
 }

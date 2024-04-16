@@ -13,7 +13,7 @@ class LoginController {
             let data = await LoginService.handlerLogin(req.body);
             console.log(data)
             if (data && data.Success ) {
-                res.cookie('AccessToken', data.access_token, { httpOnly: true, maxAge: 30 * 60 * 1000 });
+                res.cookie('AccessToken', data.access_token, { httpOnly: true});
             }
             return res.status(200).json( {data});
         } catch (error){

@@ -1,8 +1,8 @@
 const Branch = require('../app/models/Branch');
-const Employee = require('../app/models/Employee');
+const Personnel = require('../app/models/Personnel');
 const getBranch = async (Email) => {
     try{
-        let existUser = await Employee.findOne({Email: Email});
+        let existUser = await Personnel.findOne({Email: Email});
         if(existUser){
             let allPosition = await Branch.find();
             return {

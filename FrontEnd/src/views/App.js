@@ -3,10 +3,11 @@ import './App.scss';
 import NavWeb from '../components/Navigation/Nav.js';
 import Login from '../components/Login/Login.js'
 import Home from '../components/Home/Home';
-import TestPer from '../components/Home/TestPer.js';
-import TestMDW from '../components/Home/TestMDW.js';
 import Personnel from '../components/Personnel/Personnel.js';
+import Store from '../components/Store/Store.js';
+import Medicine from '../components/Medicine/Medicine.js';
 import { UserProvider } from './UserContext.js';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {ToastContainer} from 'react-toastify';
 import _ from 'lodash';
@@ -38,6 +39,12 @@ function App() {
           </div>
           <div className='body'>
             <Switch>
+              <Route path="/mystored">
+                <Store/>
+              </Route>
+              <Route path="/medicine">
+                <Medicine/>
+              </Route>
               <Route path="/personnel">
                 <Personnel/>
               </Route>

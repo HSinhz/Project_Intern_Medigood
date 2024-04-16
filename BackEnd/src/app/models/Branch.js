@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const Branch = new Schema (
     {
-        Id: {type: Number},
-        Name: {type: String},
+        Id: {type: String, required: true, unique: true},
+        Name: {type: String, required: true},
         Description : {type: String},
     },{
         timestamps: true,

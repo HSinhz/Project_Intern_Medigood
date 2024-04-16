@@ -1,17 +1,21 @@
 const  mongoose = require('mongoose');
 const bcryptjs = require('bcryptjs');
+const { ObjectId } = require('mongodb');
 const Schema = mongoose.Schema;
-
-const Employee = new Schema({
+const Personnel = new Schema({
         Email: { type:String, required: true },
-        Password: { type:String, required: true },
-        Name: { type:String, required: true },
+        Password: { type:String, default: 111111 },
+        PositionId: {type: Number},
+        BranchId: {type: String, default: 'abc'},
+        LastName: { type:String, required: true },
+        FirstName: { type:String, required: true },
         Phone: { type:String, required: true },
         Address: { type:String, required: true },
-        Gender: { type: Boolean, required: true},
-        Shop_Name: { type: String, required: true},
-        Shop_Address: { type: String, required: true},
-        Scope: { type: Boolean, default: false},
+        Gender: { type: Number, required: true},
+        ImgUrl : {type: String, required: true},
+        BirthDay: {type: String, required: true},
+        Country: {type: String, required: true},
+        Gender: { type: String, required: true},
         Verify: { type: Boolean},
         URIVerify : { type: String },
         Code_Verify: { type: Number},
@@ -20,8 +24,11 @@ const Employee = new Schema({
         Verify: { type: Boolean, default: false},
         Access_token: {type: String},
         Refresh_token: {type: String},
-        PositionId: {type: Number},
-        Online: {type: Boolean, default: false}
+        Online: {type: Boolean, default: false},
+        OnlineRecent: {type: Number},
+        OnlineTotal: {type: Number, default: 0},
+        TotalOrder: {type: Number, default: 0},
+        Decscription: {type: String}
     },
     {
         timestamps: true,
@@ -29,7 +36,7 @@ const Employee = new Schema({
 );
 
 
-Employee.pre('save', async function(next){
+Personnel.pre('save', async function(next){
     try{
         console.log('password: ', this.Password)
         const salt = await bcryptjs.genSalt(10);
@@ -42,4 +49,4 @@ Employee.pre('save', async function(next){
         next(error);
     }
 })
-module.exports = mongoose.model('Employee', Employee); 
+module.exports = mongoose.model('Personnel', Personnel); 

@@ -1,12 +1,12 @@
-const Employee = require("../app/models/Employee");
+const Personnel = require("../app/models/Personnel");
 const {createJWT} = require("../middleware/jwtacction")
 const getRefreshTokenUser = async ( payload ,emloyeeId) => {
     try {
-        let existEmloyee = await Employee.findOne({_id: emloyeeId});
+        let existEmloyee = await Personnel.findOne({_id: emloyeeId});
         if(existEmloyee){
             if(existEmloyee.Refresh_token){
                 let newAccessToken = createJWT(payload, 30*60); 
-                await Employee.updateOne({_id: emloyeeId}, {
+                await Personnel.updateOne({_id: emloyeeId}, {
                     Access_token: newAccessToken
                 })
                 return {

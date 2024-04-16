@@ -3,14 +3,16 @@ import { useHistory } from 'react-router-dom';
 import { useUser } from '../../views/UserContext';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import InputGroup from 'react-bootstrap/InputGroup';
+import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { AiOutlineSearch } from "react-icons/ai";
 import { AiOutlinePlus } from "react-icons/ai";
 import { toast } from 'react-toastify';
+import moment from 'moment';
 import './Personnel.scss'
 import ModalCreateEmployee from './ModalCreateEmployee';
+import ModalDeleteEmployee from './ModalDeleteEmployee';
 import { getEmployeeWithPagination } from '../../services/PersonnelService';
 const Personnel = () => {
     const { user } = useUser();
@@ -20,22 +22,24 @@ const Personnel = () => {
     const [dataModalEmployee, setDataModalEmployee] = useState({});
     const [listPersonnel, setListPersonnel] = useState([]);
 
+    const fectDataEmloyee = async () => {
+        try {
+            let response = await getEmployeeWithPagination();
+            if( response && response.Success === true){
+                setListPersonnel(response.Data);
+                console.log("Check Data >>>>>>>>>", response.Data);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error("Có lỗi vui lòng thử lại sau");
+        }
+    }
+
     useEffect(() => {
+        document.title = 'Nhân sự';
         console.log(user.isAuthenticated);
         if(!user.isAuthenticated){
             history.push('/login');
-        }
-        const fectDataEmloyee = async () => {
-            try {
-                let response = await getEmployeeWithPagination();
-                if( response && response.Success === true){
-                    setListPersonnel(response.Data);
-                    console.log("Check Data >>>>>>>>>", response.Data);
-                }
-            } catch (error) {
-                console.log("Error: ", error);
-                toast.error("Có lỗi vui lòng thử lại sau");
-            }
         }
         fectDataEmloyee();
     }, []);
@@ -45,10 +49,29 @@ const Personnel = () => {
         setActionModal("CREATE");
     }
 
+    const handleEditEmployee = (dataEmployee) => {
+        console.log("dataEmployee: ", dataEmployee)
+        setDataModalEmployee(dataEmployee);
+        setIsShowModalCreateEmployee(true);
+        setActionModal("UPDATE");
+    }
     const  handleCloseModal = () => {
         setIsShowModalCreateEmployee(false);
         setActionModal("");
         setDataModalEmployee({});
+        fectDataEmloyee();
+    }
+
+    // Xử lý dành cho Modal Delete Employee
+    const [isShowModalDelete, setIsShowModalDelete] = useState(false);
+    const handleOpenModalDelete = (employeeData) => {
+        setIsShowModalDelete(true);
+        setDataModalEmployee(employeeData);
+    }
+    const handleCloseModalDelete = () => {
+        setIsShowModalDelete(false);
+        setDataModalEmployee({});
+        fectDataEmloyee();
     }
     return (
         <>
@@ -101,51 +124,62 @@ const Personnel = () => {
                         <div className='d-flex justify-content-end'>
                             <button type="submit" className='btn btn-success' onClick={() => handleOpenModalCreateEmployee()}><AiOutlinePlus className='pb-1 mx-2'/>Nhân viên</button>
                         </div>
-                        <div className='table-responsive'>
-                            <table class="table mt-4">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"></th>
-                                        <th scope="col">Họ tên</th>
-                                        <th scope="col">Mã nhân viên</th>
-                                        <th scope="col">Cửa hàng</th>
-                                        <th scope="col">Chức vụ</th>
-                                        <th scope="col">Trạng thái</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {listPersonnel && listPersonnel.length > 0 ? 
-                                        <>
-                                            {listPersonnel.map((item, index) => {
-                                                return (
-                                                    <tr className='fs-20'>
-                                                        <td className='w-60'><img className='img-personnel-container img-personnel img-fluid' src='https://img.freepik.com/premium-vector/cute-smiling-boy-avatar-flat-style-vector-illustration_710508-1241.jpg'/></td>
-                                                        <td >
-                                                            <div>
-                                                                {item.Name}
+                        <div className='mt-4'>
+                            <Accordion className=''>
+                                {listPersonnel && listPersonnel.length > 0 ? 
+                                    <>
+                                        {listPersonnel.map((item, index) => {
+                                            const startWork = moment(item.createdAt).local().format('DD-MM-YYYY');
+                                            const birthDayFormat = moment(item.BirthDay).local().format('DD-MM-YYYY');
+                                            return (
+                                                <Accordion.Item eventKey={index.toString()} key={index}>
+                                                    <Accordion.Header>
+                                                        <div className='d-flex flex-wrap align-items-center'>
+                                                            <img className='img-personnel-container img-personnel img-fluid' src={item.ImgUrl}/>
+                                                            <div className='mx-4'>
+                                                                <p className='mb-1'><span className='fw-bold'>Mã NV :  </span> {item._id}</p>
+                                                                <p className='mb-1'><span className='fw-bold'>Email : </span>{item.Email}</p>
+                                                                <p className='mb-1'><span className='fw-bold'>Họ tên : </span> {item.LastName} {item.FirstName}</p>
+                                                                <p className='mb-1'><span className='fw-bold'>Chức vụ : </span> {item.Position}</p>
                                                             </div>
-                                                            <div>
-                                                                {item.Email}
+                                                        </div>
+                                                    </Accordion.Header>
+                                                    <Accordion.Body>
+                                                        <div className='row mb-3'>
+                                                            <div className='col'><span className='fw-bold'>Số điện thoại : </span> {item.Phone}</div>
+                                                            <div className='col'><span className='fw-bold'>Giới tính : </span> {item.Gender == 1 ? 'Nam' : item.Gender == 2 ? 'Nữ' : 'Khác'}</div>
+                                                            <div className='col'><span className='fw-bold'>Ngày sinh : </span>{birthDayFormat}</div>
+                                                        </div>
+                                                        <div className='row mb-3'>
+                                                            <div className='col'><span className='fw-bold'>Địa chỉ : </span>{item.Address}</div>
+                                                            <div className='col'><span className='fw-bold'>Quê quán : </span>{item.Country}</div>
+                                                        </div>
+                                                        <div className='row mb-3'>
+                                                            <div className='col'><span className='fw-bold'>Ngày bắt đầu : </span> {startWork}</div>
+                                                        </div>
+                                                        <div className='line-accor-body'></div>
+                                                        <div className='d-flex'>
+                                                            <div className='mt-3 me-3'>
+                                                                <button className='btn btn-success'
+                                                                    onClick={() => handleEditEmployee(item)}
+                                                                >Chỉnh sửa</button>
                                                             </div>
-                                                        </td>
-                                                        <td>{item._id}</td>
-                                                        <td>{item.Phone}</td>
-                                                        <td>Dược sĩ</td>
-                                                        <td>
-                                                            {
-                                                               item.Online === true ? "Online" : "Offline"
-                                                            }
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })}
-                                        </> : 
-                                        <>
-                                            <span >Chưa có nhân viên làm việc ở cửa hàng</span>     
-                                        </>
-                                    }
-                                </tbody>
-                            </table>
+                                                            <div className='mt-3'>
+                                                                <button className='btn btn-secondary'
+                                                                    onClick={() => handleOpenModalDelete(item)}
+                                                                >Xóa</button>
+                                                            </div>
+                                                        </div>
+                                                    </Accordion.Body>
+                                                </Accordion.Item>     
+                                            )
+                                        })}
+                                    </> : 
+                                    <>
+                                        <span >Chưa có nhân viên làm việc ở cửa hàng</span>     
+                                    </>
+                                }
+                            </Accordion>
                         </div>
                     </div>
                 </div>
@@ -155,6 +189,13 @@ const Personnel = () => {
                 show = {isShowModalCreateEmployee}
                 action = {acctionModal}
                 dataModalEmployee = {dataModalEmployee}
+            />
+            <ModalDeleteEmployee 
+                title = {"Xác nhận xóa nhân viên"}
+                body = {"Bạn có chắc muốn xóa nhân viên : "}
+                show = {isShowModalDelete}
+                dataModalEmployee = {dataModalEmployee}
+                onHide = {handleCloseModalDelete}
             />
         </>
     )

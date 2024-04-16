@@ -1,16 +1,15 @@
 require("dotenv").config();
-const Employee = require('../app/models/Employee');
+const Personnel = require('../app/models/Personnel');
 const { createJWT} = require('../middleware/jwtacction');
 const bcryptjs = require('bcryptjs');
 const GroupRole = require('../app/models/GroupRole');
 const handlerLogin = async ( userData) => {
     try{
         let data = {};
-        let existUser = await Employee.findOne({ Email: userData.Email})
+        let existUser = await Personnel.findOne({ Email: userData.Email})
             if( existUser ){
                 let checkpass =  checkPassWord( userData.Password, existUser.Password);
                 if( checkpass ){
-                    if( existUser.Verify === true){
                         let roleUser = await GroupRole.find({PositionId: existUser.PositionId}).select("Url");
                         const groupRoleUrl = roleUser.map(role => role.Url);
                         let payload = {
@@ -21,7 +20,7 @@ const handlerLogin = async ( userData) => {
                         // tạo Access_Token và Refresh_Token
                         let accessToken = createJWT(payload, 30*60);
                         let refreshToken = createJWT(payload, null);
-                        Employee.updateOne( {Email:existUser.Email},{
+                        Personnel.updateOne( {Email:existUser.Email},{
                             $set: {
                                 Online: true,
                                 Access_token: accessToken,
@@ -33,13 +32,7 @@ const handlerLogin = async ( userData) => {
                             Mess : 'Đăng nhập thành công',
                             access_token:  accessToken,
                         }        
-                    } 
-                    return {
-                        data : {
-                            Success :false,
-                            Mess : 'Account is invalid', 
-                        }   
-                    }
+                    
                 }   
                 return {
                     data : {
