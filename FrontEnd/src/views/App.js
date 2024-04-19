@@ -6,6 +6,7 @@ import Home from '../components/Home/Home';
 import Personnel from '../components/Personnel/Personnel.js';
 import Store from '../components/Store/Store.js';
 import Medicine from '../components/Medicine/Medicine.js';
+import DetailMedicine from '../components/Medicine/DetailMedicine.js';
 import { UserProvider } from './UserContext.js';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -39,6 +40,9 @@ function App() {
           </div>
           <div className='body'>
             <Switch>
+              <Route path="/medicine/:medicinename">
+                <DetailMedicine/>
+              </Route>
               <Route path="/mystored">
                 <Store/>
               </Route>

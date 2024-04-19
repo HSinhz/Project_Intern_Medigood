@@ -6,14 +6,12 @@ export const UserProvider  =  ({ children }) => {
     // User is the name of the "data" that gets stored in context
     // const [user, setUser] = React.useState({ name: 'ssssss', auth: false });
     const [user, setUser] = useState(
-        JSON.parse(localStorage.getItem("account")) || { isAuthenticated: false, Token: '' }
+        JSON.parse(localStorage.getItem("account")) || { isAuthenticated: false, Mess: '' }
     );
 
     // Login updates the user data with a name parameter
     const  loginContext = (userData) => {
-        setUser(  userData
-           
-        );
+        setUser(  userData );
     };
 
     // Logout updates the user data to default

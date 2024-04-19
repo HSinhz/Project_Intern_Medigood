@@ -8,7 +8,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getPosition } from '../../services/PersonnelService';
 import { getBranch } from '../../services/BranchService';
-import { validateInputEmployee } from '../../utils/validateInputEmployee';
+import { validateInputEmployee } from '../../utils/validates/validateInputEmployee';
 import {  createPersonal, editPersonal} from '../../services/PersonnelService';
 import moment from 'moment';
 
@@ -165,7 +165,7 @@ const ModalCreateEmployee = (props) => {
                 </Modal.Header>
                 <Modal.Body >
                     <div className='content-body row'>
-                        <div className='col-12 col-sm-7'>
+                        <div className='col-sm-7'>
                             <div className='form-group mb-2'>
                                 <label>Email <span className='red'>(*)</span> :</label>
                                 <input className={validInput.Email ? 'form-control w-60' : 'form-control is-invalid w-60'} type='text' required 
@@ -307,7 +307,6 @@ const ModalCreateEmployee = (props) => {
                                         )}  
                                     </>
                                     : <>
-                                        
                                     </>
                                 }
                             </select>

@@ -14,11 +14,9 @@ import { BsFillPersonLinesFill } from "react-icons/bs";
 import { GiMedicines } from "react-icons/gi";
 import { AiFillSetting } from "react-icons/ai";
 const NavCategory = () => {
-
-    
     return (
         <>
-            <div className='d-flex'>
+            <div className='d-flex nav-category'>
                 <ul className="nav me-auto">
                     <li className="nav-item dropdown">
                         <a href="#action/3.8978" className="nav-link dropdown-toggle" id="navbarDropdown" role="button" aria-expanded="false">
@@ -49,7 +47,7 @@ const NavCategory = () => {
                 </ul>
                 <ul className="nav me-auto">
                     <li className="nav-item dropdown">
-                        <a href="#action/3.8978" className="nav-link dropdown-toggle" id="navbarDropdown" role="button" aria-expanded="false">
+                        <a href="/action/3.8978" className="nav-link dropdown-toggle" id="navbarDropdown" role="button" aria-expanded="false">
                             Thực phẩm chức năng
                         </a>
                         <ul className="dropdown-menu" aria-labelledby="navbarDropdown">

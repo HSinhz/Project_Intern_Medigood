@@ -1,5 +1,5 @@
 import { useEffect, useContext, useState } from 'react';
-import { useHistory, NavLink } from 'react-router-dom';
+import { useHistory, NavLink, Link  } from 'react-router-dom';
 import { useUser } from '../../views/UserContext';
 import './Medicine.scss';
 import NavCategory from './NavCategory';
@@ -12,10 +12,17 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { AiOutlinePlus } from "react-icons/ai";
 import { toast } from 'react-toastify';
 import { showMedicine } from '../../services/MedicineService';
+import ModalMedicine from './ModalMedicine';
 const Medicine = () => {
     const { user } = useUser();
     const history = useHistory();
     const [listMedicine, setListMedicine] = useState([]);
+    
+    // Xử lý Modal
+    const [actionModal, setActionModal] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    
+
     useEffect(() => {
         document.title = 'Dược Phẩm';
         console.log(user.isAuthenticated);
@@ -25,12 +32,13 @@ const Medicine = () => {
         fetchDataMedicine();
     }, []);
 
+    
+
     const fetchDataMedicine = async () => {
         try{
             let response = await showMedicine();
             console.log("Check data medicine: ", response.Data)
             if(response && response.Success === true){
-                toast.success("OKKKK r ba");       
                 setListMedicine(response.Data);
             }
         } catch (error){
@@ -39,6 +47,16 @@ const Medicine = () => {
         }
     }
 
+    const handleOpenModal = () => {
+        setActionModal('CREATE');
+        setShowModal(true);
+    }
+
+    const handleCloseModal = () =>{
+        fetchDataMedicine();
+        setActionModal('');
+        setShowModal(false);
+    }
     return (
         <>
             <div className='container medicine'>
@@ -63,7 +81,9 @@ const Medicine = () => {
                         </Form>
                     </div>
                     <div className='col col-sm-2 d-flex justify-content-end'>
-                        <button type="submit" className='btn btn-success' ><AiOutlinePlus className='pb-1 mx-2'/>Dược phẩm</button>
+                        <button type="submit" className='btn btn-success'  onClick={() => handleOpenModal()}>
+                            <AiOutlinePlus className='pb-1 mx-2'/>Dược phẩm
+                        </button>
                     </div>
                 </div>
                 <div className='mt-4 nav-category'>
@@ -99,8 +119,14 @@ const Medicine = () => {
                                                 <td>{item.Price} VNĐ</td>
                                                 <td>{item.Unit}</td>
                                                 <td>
-                                                    <div className=''>
-                                                        <button className='btn btn-success mx-3'>Chi tiết</button>
+                                                    <div>
+                                                    <Link to={{
+                                                        pathname: `/medicine/${item.MedicineName}`,
+                                                        state: { 
+                                                            medicineId: item.MedicineId,
+                                                            medicineName: item.MedicineName
+                                                        }
+                                                    }} className='btn btn-success'>Chi tiết</Link>
                                                     </div>
                                                 </td>
 
@@ -116,6 +142,12 @@ const Medicine = () => {
                     </table>
                 </div>
             </div>
+
+            <ModalMedicine 
+                show = {showModal}
+                action = {actionModal}
+                onHide = {handleCloseModal}
+            />
         </>
     )
 }

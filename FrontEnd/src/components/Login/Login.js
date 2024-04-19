@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { loginUser} from '../../services/userService'
 import useCheckLogin from '../../utils/checkLogin';
 import '../style.scss';
-import validateLogin from '../../utils/validateLogin';
+import validateLogin from '../../utils/validates/validateLogin';
 import { useUser } from '../../views/UserContext';
 const Login = (props) => {
     const {loginContext} = useUser();
