@@ -1,0 +1,220 @@
+
+// NewOrder.js
+.component-neworder {
+    display: flex;
+    height: 75vh;
+    .table-medicine-order {
+        flex: 2.2;
+        margin-left: 16px;
+        margin-right: 16px;
+        border-radius: 10px; 
+        border: 1px solid #ccc;
+        height: 100%;
+    }
+    .confirm {
+        flex: 0.8;
+        border-radius: 10px; 
+        border: 1px solid #ccc;
+        margin-right: 8px;
+    }
+    table {
+        font-size: 24px;
+        .m-8 {
+            padding: 16px;
+        }
+        .w-name-medicine {
+            width: 400px ;
+        }
+        .img-medicine {
+            width: 100px;
+        }
+    }
+}
+
+// Modal-choosee.js
+.modal-choose {
+    .modal-body {
+        .text-body {
+            font-size: 18px;
+            text-decoration: none !important;
+        }  
+        
+    }
+}
+
+
+.img-medicine {
+    width: 100px ;
+}
+
+
+// ConfirmOrder.js
+.form-confirm-order {
+    height: 100%;
+    
+    .infor-customer {
+        .input-name-customer {
+            padding-left: 12px;
+        }
+    }
+    .line {
+        height: 1px;
+        width: 100%;
+        background-color: #868686;
+    }
+    .total {
+        justify-content: space-between;
+    }
+    .btn-context {
+        .btn-context-left {
+            flex: 2;
+            
+            .btn-create-order {
+                width: 100%;
+                background-color: #00bb1f !important;
+                color: #ffff;
+                border:none
+            }
+            .btn-create-order:active {
+                opacity: 0.5;
+            }
+        }
+        .btn-context-right {
+            flex: 1;
+            .btn-cancel {
+                border: none;
+                width: 100%;
+            }  
+            .btn-cancel:active {
+                opacity: 0.5;
+            }
+        }
+    }
+}
+
+.form-confirm-order, .history-prescription {
+    .form-customer {
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            .icon {
+                position: absolute;
+                left: 10px; /* Điều chỉnh khoảng cách giữa biểu tượng và input */
+                pointer-events: none; /* Đảm bảo biểu tượng không thể chọn */
+                font-size: 24px;
+            }
+            .input-customer {
+                height: 38px;
+                border: 1px 0 0 rgb(161, 161, 160);
+                outline: none;
+            }
+            .input-customer {
+                padding-left: 36px; /* Đảm bảo khoảng cách giữa biểu tượng và input */
+            }
+        }
+    }
+}
+
+// HistoryOrder.js
+.history-prescription {
+    .table-history-order {
+        table {
+            table-layout: auto; /* Thiết lập kiểu bố cục của bảng */
+            width: 100%;
+            th {
+                width: calc(100% / 6); /* Chia đều độ rộng cho 4 cột */
+            }
+            thead, tbody {
+                tr {
+                    margin-left: 28px;
+                    margin-right: 28px;
+                }
+            }
+            tbody {
+                .table-row {
+                    transition: background-color 0.3s ease;
+                }
+                
+                .table-row:hover {
+                    background-color: lightgrey;
+                    cursor: pointer;
+                }
+            }
+
+            tbody tr {
+                height: 50px;
+            }
+            tbody tr:not(:last-child) {
+                border-bottom: 1px solid #ddd; /* Màu và kiểu đường kẻ bạn có thể điều chỉnh tùy ý */
+            }
+            tbody tr a td {
+                vertical-align: middle;
+            }
+            tbody a .td-detail {
+                float: right;
+                vertical-align: middle ;
+            }
+
+
+        }
+    }
+    .paginate {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+// DetailPrescription Component
+.detail-prescription {
+    .line {
+        height: 1px;
+        background-color: #bebebe85;
+    }
+    .infor-customer{
+        flex: 1;
+    }
+    .infor-prescription {
+        flex: 3;
+        height: fit-content;
+        .infor-prescription-body {
+            flex-wrap: nowrap;
+            .body1{
+                width: 96px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .body2 {
+                padding-left: 5px;
+            }
+        }
+    }
+
+    .infor-medic-prescription{
+        box-sizing: border-box;
+        .table-container {
+            width: 100%;
+            display: table;
+            .table-head {
+                background-color: #F3F4F5;
+            }
+            tbody {
+                .cell-img {
+                    width: 120px;
+                }
+                .img-medic {
+                    width: 120px;
+                }
+            }
+        }
+    }
+}
+
+
+.background-white {
+    background: #ffffff !important;
+    box-shadow: 0 0 5px rgba(139, 139, 139, 0.5);
+}
+
+

@@ -3,16 +3,24 @@ const {getRefreshTokenUser} = require("../Services/JWTService");
 
 const checkUserJWT = (req, res, next )=> {
         let cookies = req.cookies;
-        // console.log("cookie check JWT", cookies)
+        // console.log("cookie check JWT", cookies.AccessToken)
         if( cookies && cookies.AccessToken){
+            // console.log("ádasdasdasd")
+
             let decodeAccessToken = verifyJWT(cookies.AccessToken);
+            // console.log("decodeAccessToken.exp: ", decodeAccessToken);
+
             let expiresIn = decodeAccessToken.exp;
+            // console.log("expiresIn: ", expiresIn)
             let check = checkExpiredJWT(expiresIn);
+            // console.log("decodeAccessToken: ", decodeAccessToken);  
+            // console.log("check: ", check)
             if(decodeAccessToken){  // Kiểm tra AccessToken có tồn tại
                 if( check ){ // Kiểm tra thời gian của AccessToken
                     req.user = decodeAccessToken;
                     next();
                 } else {
+                    console.log("Đang tạo mới")
                     let data = getRefreshTokenUser(decodeAccessToken, decodeAccessToken.email)
                     if( data&& data.Success === true ){
                         res.cookie('AccessToken', data.AT, { httpOnly: true});

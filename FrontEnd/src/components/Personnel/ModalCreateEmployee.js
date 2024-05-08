@@ -264,7 +264,6 @@ const ModalCreateEmployee = (props) => {
                                 value={employeeData.Country}
                                 onChange={(event) => handleOnChangeInput(event.target.value, 'Country')}
                             />
-                           
                         </div>
                         <div className='col-12 col-sm-6 form-group mb-2'>
                             <label>Cửa hàng</label>
@@ -279,7 +278,7 @@ const ModalCreateEmployee = (props) => {
                                             {
                                                 listBranch.map((item, index) => {
                                                     return (
-                                                        <option value={item._id}>{item.Address}</option>
+                                                        <option value={item.Id}>{item.Address}</option>
                                                     )
                                                 })
                                             }

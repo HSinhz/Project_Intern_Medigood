@@ -13,9 +13,10 @@ const handlerLogin = async ( userData) => {
                         let roleUser = await GroupRole.find({PositionId: existUser.PositionId}).select("Url");
                         const groupRoleUrl = roleUser.map(role => role.Url);
                         let payload = {
-                            shopId: existUser._id,
+                            personnelId: existUser._id,
                             email: existUser.Email,
-                            Roles: groupRoleUrl,                            
+                            Roles: groupRoleUrl,
+                            bracnhId: existUser.BranchId                            
                         }
                         // tạo Access_Token và Refresh_Token
                         let accessToken = createJWT(payload, 30*60);

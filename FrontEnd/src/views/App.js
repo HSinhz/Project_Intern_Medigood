@@ -40,11 +40,28 @@ function App() {
           </div>
           <div className='body'>
             <Switch>
-              <Route path="/medicine/:medicinename">
+              <Route path="/medicine/:typeName/:categoryName/:medicineName">
                 <DetailMedicine/>
               </Route>
-              <Route path="/mystored">
-                <Store/>
+              <Route path="/medicine/:typeName/:categoryName">
+                <Medicine/>
+              </Route>
+              <Route path="/medicine/:typeId">
+                <Medicine/>
+              </Route>
+              <Route path={
+                [
+                  "/cua-hang-chi-nhanh/don-hang/lich-su-don-hang/:madonhang",
+                  "/cua-hang-chi-nhanh/don-hang/tao-moi",
+                  "/cua-hang-chi-nhanh/don-hang/khach-hang",
+                  "/cua-hang-chi-nhanh/don-hang/lich-su-don-hang",
+                  "/mystored/cua-hang-chi-nhanh", 
+                  '/cua-hang-chi-nhanh/don-hang', 
+                  '/cua-hang-chi-nhanh/thong-ke', 
+                  '/cua-hang-chi-nhanh/ho-so', 
+                  '/cua-hang-chi-nhanh/duoc-pham', 
+                  '/cua-hang-chi-nhanh/cai-dat']}>
+                <Store />
               </Route>
               <Route path="/medicine">
                 <Medicine/>

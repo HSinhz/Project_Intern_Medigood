@@ -13,10 +13,12 @@ const createJWT = ( payload ,expiresIn) => {
 }
 
 const verifyJWT = (token) => {
+    console.log("Token in verify: ", token)
     let key = process.env.JWT_SECRET;
     let data = null;
     try{
         let decoded = jwt.verify(token, key);
+        console.log("++++++++++++++++++++++++++++decode: ", decoded);
         data = decoded;
     } catch (err) {
         console.log(err);

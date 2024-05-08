@@ -5,24 +5,40 @@ import './Medicine.scss';
 import NavCategory from './NavCategory';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { AiOutlineSearch } from "react-icons/ai";
 import { AiOutlinePlus } from "react-icons/ai";
 import { toast } from 'react-toastify';
 import { showMedicine } from '../../services/MedicineService';
+import ReactPaginate from 'react-paginate';
 import ModalMedicine from './ModalMedicine';
+
 const Medicine = () => {
     const { user } = useUser();
     const history = useHistory();
     const [listMedicine, setListMedicine] = useState([]);
-    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [currentLimt, setCurrentLimit] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
     // Xử lý Modal
     const [actionModal, setActionModal] = useState('');
     const [showModal, setShowModal] = useState(false);
     
+    const [dataType, setDataType] = useState('');
+    const [isActionQuery, setIsActionQuery] = useState('')
+    const handleSelectType = (selectedTypeId) => {
+        setDataType(selectedTypeId);
+        setIsActionQuery('TypeId');
+        console.log("selectedTypeId: ", dataType);
+        
+    };
 
+    const handleSelectCategoty= (selectCategoryId) => {
+        console.log("selectCategoryId: ", dataType);
+        setIsActionQuery('CategoryId')
+        setDataType(selectCategoryId);
+    }
     useEffect(() => {
         document.title = 'Dược Phẩm';
         console.log(user.isAuthenticated);
@@ -30,13 +46,11 @@ const Medicine = () => {
             history.push('/login');
         }
         fetchDataMedicine();
-    }, []);
-
-    
+    }, [dataType, currentPage]);
 
     const fetchDataMedicine = async () => {
         try{
-            let response = await showMedicine();
+            let response = await showMedicine(dataType, isActionQuery, currentPage, currentLimt );
             console.log("Check data medicine: ", response.Data)
             if(response && response.Success === true){
                 setListMedicine(response.Data);
@@ -57,6 +71,12 @@ const Medicine = () => {
         setActionModal('');
         setShowModal(false);
     }
+    
+    const handlePageClick = async (event) => {
+        setCurrentPage(+event.selected + 1);
+    };
+   
+
     return (
         <>
             <div className='container medicine'>
@@ -87,7 +107,9 @@ const Medicine = () => {
                     </div>
                 </div>
                 <div className='mt-4 nav-category'>
-                    <NavCategory />
+                    <NavCategory 
+                        onSelectType={handleSelectType}
+                        onSelectcategory= {handleSelectCategoty} />
                 </div>
                 <div className='mt-4'>
                     <table class="table mt-4">
@@ -110,21 +132,21 @@ const Medicine = () => {
                                                 <td className='w-60'><img className='img-personnel-container img-personnel img-fluid' src={item.ImgUrl}/></td>
                                                 <td className=' witd-td-name'>
                                                     <div className='d-flex align-items-center justify-content-center '>
-                                                        {item.MedicineName}
+                                                        {item.MedicineDetailName}
                                                     </div>                                                    
                                                 </td>
                                                 <td>
                                                     <a href='/ádasd'>{item.CategoryName}</a>
                                                 </td>
                                                 <td>{item.Price} VNĐ</td>
-                                                <td>{item.Unit}</td>
+                                                <td>{item.UnitName}</td>
                                                 <td>
                                                     <div>
                                                     <Link to={{
-                                                        pathname: `/medicine/${item.MedicineName}`,
+                                                        pathname: `/medicine/o/${item.CategoryName}/${item.MedicineDetailName}`,
                                                         state: { 
                                                             medicineId: item.MedicineId,
-                                                            medicineName: item.MedicineName
+                                                            medicineDetailName: item.MedicineDetailName
                                                         }
                                                     }} className='btn btn-success'>Chi tiết</Link>
                                                     </div>
@@ -141,6 +163,28 @@ const Medicine = () => {
                         </tbody>
                     </table>
                 </div>
+                <div className='medicine-footer'>
+                    <ReactPaginate
+                        nextLabel="next >"
+                        onPageChange={handlePageClick}
+                        pageRangeDisplayed={3}
+                        marginPagesDisplayed={2}
+                        pageCount={5}
+                        previousLabel="< previous"
+                        pageClassName="page-item"
+                        pageLinkClassName="page-link"
+                        previousClassName="page-item"
+                        previousLinkClassName="page-link"
+                        nextClassName="page-item"
+                        nextLinkClassName="page-link"
+                        breakLabel="..."
+                        breakClassName="page-item"
+                        breakLinkClassName="page-link"
+                        containerClassName="pagination"
+                        activeClassName="active"
+                        renderOnZeroPageCount={null}
+                    />       
+                </div>
             </div>
 
             <ModalMedicine 
@@ -148,6 +192,7 @@ const Medicine = () => {
                 action = {actionModal}
                 onHide = {handleCloseModal}
             />
+
         </>
     )
 }

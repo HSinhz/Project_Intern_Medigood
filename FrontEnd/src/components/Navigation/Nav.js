@@ -33,7 +33,7 @@ const NavWeb = () => {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto fw-bold">
-                        <Nav.Link href="/mystored" className='nav-link text-color'>Cửa hàng</Nav.Link>
+                        <Nav.Link href="/mystored/cua-hang-chi-nhanh" className='nav-link text-color'>Cửa hàng</Nav.Link>
                         <Nav.Link href="/news" className='nav-link text-color'>Tin tức</Nav.Link>
                         <NavDropdown title="Quản trị" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1" className='fs-5'><span className='m-2'><BiStore/></span> Quản lý cửa hàng</NavDropdown.Item>

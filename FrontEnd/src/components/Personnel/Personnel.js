@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import moment from 'moment';
 import './Personnel.scss'
 import ModalCreateEmployee from './ModalCreateEmployee';
-import ModalDeleteEmployee from './ModalDeleteEmployee';
+import ModalDeleteEmployee from '../ModalDeleteEmployee';
 import { getEmployeeWithPagination } from '../../services/PersonnelService';
 const Personnel = () => {
     const { user } = useUser();
@@ -64,13 +64,20 @@ const Personnel = () => {
 
     // Xử lý dành cho Modal Delete Employee
     const [isShowModalDelete, setIsShowModalDelete] = useState(false);
+    const [objectDelete, setObjectDelete] = useState('')
+    const [fullname, setFullName] = useState('')
     const handleOpenModalDelete = (employeeData) => {
+        let fullname = employeeData.LastName + " " + employeeData.FirstName;
+        setFullName(fullname);
+        setObjectDelete('PERSONNEL');
         setIsShowModalDelete(true);
         setDataModalEmployee(employeeData);
     }
     const handleCloseModalDelete = () => {
         setIsShowModalDelete(false);
         setDataModalEmployee({});
+        setFullName('');
+        setObjectDelete('')
         fectDataEmloyee();
     }
     return (
@@ -193,8 +200,16 @@ const Personnel = () => {
             <ModalDeleteEmployee 
                 title = {"Xác nhận xóa nhân viên"}
                 body = {"Bạn có chắc muốn xóa nhân viên : "}
+                obj = {objectDelete}
                 show = {isShowModalDelete}
-                dataModalEmployee = {dataModalEmployee}
+                dataDelete = {{
+                    titleId: 'Mã nhân viên',
+                    Id: dataModalEmployee._id,
+                    titleName: 'Họ và tên',
+                    Name: fullname,
+                    titlePosition: 'Chức vụ',
+                    Position: dataModalEmployee.Position
+                }}
                 onHide = {handleCloseModalDelete}
             />
         </>

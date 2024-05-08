@@ -16,8 +16,6 @@ const uploadStorageFireBase = async (dataImg) => {
         };
         const snapshot = await uploadBytesResumable(storageRef, dataImg.buffer, metaData);
         const dowloadUrlImg = await getDownloadURL(snapshot.ref);
-        console.log("Upload Image Successfully");
-        console.log("URL IMG FB: ", dowloadUrlImg);
         
         return {
             Success: true,
