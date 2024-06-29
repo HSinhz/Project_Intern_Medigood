@@ -1,12 +1,13 @@
-import { useEffect, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useUser } from '../../views/UserContext';
+import { UserContext } from '../../views/UserContext';
 
 const Home = () => {
-    const { user } = useUser();
+    const { user } = useContext(UserContext);
     const history = useHistory();
     useEffect(() => {
-        console.log(user.isAuthenticated);
+        document.title = 'Medigood'
+        console.log(user);
         if(!user.isAuthenticated){
             history.push('/login');
         }

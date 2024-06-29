@@ -105,7 +105,7 @@ class BranchStoreController {
                 let checkParams = checkReqParams(req.params.prescriptionId);
                 if(checkParams.Success === true){
                     let data = await BranchStoreService.fetchPrescriptionDetail(req.user.email, req.user.bracnhId,  req.params.prescriptionId);
-                    console.log("Data: ", data);
+                    console.log("Data: ", data.Data);
                     return res.status(data.Type).json({data: data});
                 }
                 return res.status(checkParams.Type).json({data: checkParams});
@@ -119,6 +119,9 @@ class BranchStoreController {
             })
         }
     }
+
+    
+   
 }
 
 module.exports = new BranchStoreController;

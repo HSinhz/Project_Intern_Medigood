@@ -9,9 +9,9 @@ const fetchMedicineBranch = async () => {
     return response.data;
 }
 
-const createOrder = async (orderItems , total,phoneCustomer, point) => {
+const createOrder = async (orderItems , total,phoneCustomer, point, totalDiscount) => {
     const response = await axios.post(`/create/order/`,{ 
-        orderItems, total, phoneCustomer, point
+        orderItems, total, phoneCustomer, point, totalDiscount
     });
     return response.data;
 }
@@ -26,10 +26,23 @@ const fetchDataPrescripTionDetail = async(PrescriptionId) => {
     return response.data;
 
 }
+
+const createCustomer = async (dataCustomer) => {
+    const response = await axios.post('/create/customer/', {
+        dataCustomer
+    });
+    return response.data;
+
+}
+
+
+
+
 export {
     getStoreById,
     fetchMedicineBranch,
     createOrder,
     fetchDataAllPrescriptionWithBranch,
-    fetchDataPrescripTionDetail
+    fetchDataPrescripTionDetail,
+    createCustomer,
 }

@@ -1,51 +1,81 @@
 const AppService = require("../../Services/AppService");
-const SocketService = require("../../webSocket")
+const {INTERNAL_ERROR, NO_LOGGIN} = require('../../config/db/httpCode');
+const {checkReqUser, checkReqBody, checkReqParams} = require('../../util/checkReqUser')
+
+// const SocketService = require("../../webSocket")
 class AppController  {
     async handlerLoginApp(req, res ){
         try {
-            let Email = req.body.Email;
-            console.log(Email)
-            if( Email ){
-                let data = await AppService.handlerLoginApp(Email);
-                if( data.Success === true ){
-                    return res.status(200).json({data});
-                } 
-                return res.status(200).json({data});
-            } return res.status(200).json({
+            
+            let phoneNumber = req.body.phoneNumber;
+            console.log(phoneNumber)
+            if( phoneNumber ){
+                let data = await AppService.handlerLoginApp(phoneNumber);
+                return res.status(data.Type).json({data});
+            } return res.status(NO_LOGGIN).json({
                 Success: false,
-                Mess: 'Email không tồn tại 1'
+                Mess: 'Vui lòng nhập số điện thoại'
             })
         } catch (error ){
-            return res.status(500).json({
+            console.log("Error Controller: ", error);
+            return res.status(INTERNAL_ERROR).json({
                 Success: false,
                 Mess: 'Error from server',
             })
         }
     }
-    async updateStatusUpdate(req, res){
+    
+    async getMedicine(req, res) {
         try {
-            let Email = req.params.email;
-            let Status = req.body.Status;
-            if( Email ){
-                let data = await AppService.updataStatusUpdate(Email, Status);
-                if( data.Success === true){
-                    return res.status(200).json({data});
-                }
-                return res.status(200).json({data});
-            } 
-            return res.status(200).json({
+            let data = await AppService.getMedicine();
+            return res.status(data.Type).json({data: data});
+        } catch (error ){
+            console.log("Error Controller: ", error);
+            return res.status(INTERNAL_ERROR).json({
                 Success: false,
-                Mess: 'Email trống'
-            })
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({
-                Success: false,
-                Mess: 'Error from server'
+                Mess: 'Error from server',
             })
         }
     }
 
+    async getCategory(req, res) {
+        try {
+            let data = await AppService.getCategory();
+            return res.status(data.Type).json({data: data})
+        } catch (error ){
+            console.log("Error Controller: ", error);
+            return res.status(INTERNAL_ERROR).json({
+                Success: false,
+                Mess: 'Error from server',
+            })
+        }
+    }
+
+    async getMedcineByCategory(req, res) {
+        try {
+            
+        } catch (error ){
+            console.log("Error Controller: ", error);
+            return res.status(INTERNAL_ERROR).json({
+                Success: false,
+                Mess: 'Error from server',
+            })
+        }
+    }
+
+    async getMedcineById(req, res) {
+        try {
+            console.log("req.params: ", req.params.MedicineId);
+            let data = await AppService.getDetailMedicine(req.params.MedicineId);
+            return res.status(data.Type).json({data: data});
+        } catch (error ){
+            console.log("Error Controller: ", error);
+            return res.status(INTERNAL_ERROR).json({
+                Success: false,
+                Mess: 'Error from server',
+            })
+        }
+    }
     async receivedDataOnSocket (){
         console.log('A client connected App controleer');
         let socket = getSocketIo();
@@ -58,57 +88,39 @@ class AppController  {
         });
     }
 
-    async showOrderWithStatus( req, res ) {
+    async getDataCustomer (req, res) {
         try {
-            const dataShipper = await SocketService.getDataWSShipper();
-            let statusOrder = req.params.status;
-            let ShopId = req.user.ShopId;
-            if( req.user ) {
-                let data = await AppService.showOrderWithStatus(ShopId, statusOrder);
-                return res.status(201).json({data});
-            } else {
-                return res.status(401).json({
-                    Success: false,
-                    Mess: ''
-                })
-            }
+            console.log("OKKKKKKKKKKKK")
+            console.log("req.params: ", req.params.PhoneCustomer);
+            let data = await AppService.getDataCustomer(req.params.PhoneCustomer);
+            return res.status(data.Type).json({data: data});
         } catch (error ){
-            console.log(error);
-            return res.status(500).json({
+            console.log("Error Controller: ", error);
+            return res.status(INTERNAL_ERROR).json({
                 Success: false,
-                Mess:'Error from server'
-            })
-        }   
-    }
-
-    async updateStatusOrder( req, res){
-        try  {
-            if(req.user){
-                console.log("")
-                if( req.params) {
-                    let data = await AppService.updateStatusOrder(req.user.ShopId, req.body.Status, req.params.orderId, req.user.EmployeeId);
-                    if( data.Success === true) {
-                        return res.status(200).json({data})
-                    }
-                    return res.status(200).json({data})
-                } 
-                return res.status(200).json({
-                    Success: false,
-                    Mess: 'Không có đơn hàng'
-                })
-            }
-            return res.status(200).json({
-                Success: false,
-                Mess: 'Không có cửa hàng'
-            })
-        } catch (error){
-            console.log(error);
-            return res.status(500).json({
-                Success: false,
-                Mess: "Error from server"
+                Mess: 'Error from server',
             })
         }
     }
+
+    async buyPrescription( req, res){
+        try {
+            let checkBody = checkReqBody(req.body);
+            console.log("req.body buy: ", req.body.dataPrescription);
+            if( checkBody.Success === true) {
+                let data = await AppService.buyPrescription(req.body.dataPrescription);
+                return res.status(data.Type).json({data: data});
+            }
+            return res.status(checkBody.Type).json({data: checkBody});
+        } catch (error ){
+            console.log("Error Controller: ", error);
+            return res.status(INTERNAL_ERROR).json({
+                Success: false,
+                Mess: 'Error from server',
+            })
+        }
+    }
+    
 }
 
 module.exports = new AppController;

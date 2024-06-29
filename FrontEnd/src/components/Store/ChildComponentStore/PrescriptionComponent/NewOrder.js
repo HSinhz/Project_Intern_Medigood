@@ -1,6 +1,5 @@
 import { useEffect, useContext, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useUser } from '../../../../views/UserContext';
+import { useHistory, useLocation } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import './ComponentChildPrescription.scss';
@@ -8,29 +7,65 @@ import ModalChoose from './ModalChoose';
 import ConfirmOrder from './ConfirmOrder';
 import { handleTotalOrder } from '../../../../utils/handleTotalOrder';
 import { toast } from 'react-toastify';
-const NewrOrder = () => {
-    const { user } = useUser();
+import { documentTile } from '../../../../utils/documentTitle';
+const NewrOrder = (props) => {
+    const location = useLocation();
     const history = useHistory();
+    const [dataReOrder, setDataReOrder] = useState({});
+   
     const [actionModal, setActionModal] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [totalOrder, setTotalOrder] = useState(0);
-    useEffect(() => {
-        console.log(user.isAuthenticated);
-        if(!user.isAuthenticated){
-            history.push('/login');
-        }
-        
-    }, []);
     const [orderItems, setOrderItems] = useState([]);
-    
+    const [dataCustomer, setDataCustomer] = useState({
+        CustomerName: '',
+        CustomerPhone: '',
+        Point: null
+    });
+    const [acctionOrder, setActionOrder] = useState('NEWORDER')
+    useEffect(() => {
+        document.title = documentTile.Store.NewOrder
+        if(location.state) {
+            setActionOrder("REORDER");
+            setDataReOrder(location.state.dataPrescription);
+            const dataState =  location.state.dataPrescription;
+            setDataCustomer({
+                CustomerName: dataState.CustomerName,
+                CustomerPhone: dataState.CustomerPhone,
+                Point: dataState.Point
+            })
+            console.log("dataCustomer: ", dataState.CustomerName, dataState.CustomerPhone, dataState.Point)
+            let nextId = 0;
+            let totalOrder = 0;
+            const dataReOrder = dataState.detailMedic.map(item => {
+                nextId = nextId + 1;
+                totalOrder = totalOrder + item.TotalPrice;
+                return {
+                    id: nextId,
+                    medicineId: item.MedicineId,
+                    img: item.MedicneImg,
+                    price: item.MedicinePrice,
+                    product: item.MedicineName,
+                    totalPriceItem: item.TotalPrice,
+                    unit: item.UnitNameMain,
+                    unitId: item.Unit,
+                    unitId_main: item.UnitMain,
+                    viePerBlis: item.ViePerBlis,
+                    viePerBox: item.ViePerBox,
+                    quantity: item.Quantity
+                }
+            })
+            setOrderItems(dataReOrder);
+            setTotalOrder(totalOrder);
+        }
+    }, []);
+
     const addOrderItem = (newOrderItem) => {
         let check = true;
         orderItems.map(item => {
-            if (item.meidicineId === newOrderItem.meidicineId) {
+            if (item.medicineId === newOrderItem.medicineId) {
                 toast.error("Sản phẩm đã tồn tại trong đơn hàng");
                 check = false;
-            } else {
-                
             }
         })
         if(check){
@@ -43,6 +78,7 @@ const NewrOrder = () => {
             // Thêm sản phẩm vào danh sách orderItems
             setOrderItems([...orderItems, newOrderItem]);
             setTotalOrder(handleTotalOrder([...orderItems, newOrderItem]));
+            console.log('orderItems: ', orderItems)
         }
     };
 
@@ -83,7 +119,7 @@ const NewrOrder = () => {
         setTotalOrder(handleTotalOrder(updatedOrderItems))
     }
 
-    const handleOnChangeSelect = (value, itemId) => {
+    const handleOnChangeSelectUnit = (value, itemId) => {
         const updatedOrderItems = orderItems.map(item => {
             if (item.id === itemId) {
                 item.unitId = parseInt(value);
@@ -139,7 +175,14 @@ const NewrOrder = () => {
     }
 
     const btnDeleteAllItemOrder = () => {
-        setOrderItems([])
+        setOrderItems([]);
+        setDataCustomer({
+            CustomerName: '',
+            CustomerPhone: '',
+            Point: null
+        })
+        setTotalOrder(0);
+        setActionOrder("NEWORDER")
     }
 
     return (
@@ -182,7 +225,7 @@ const NewrOrder = () => {
                                                     <td className='p-2'>{item.totalPriceItem}</td>
                                                     <td className='p-2'>
                                                         <select className='form-select' defaultValue={item.unitId === 7 ? 1 : item.unitId }
-                                                            onChange={(event) => handleOnChangeSelect(event.target.value, item.id)}
+                                                            onChange={(event) => handleOnChangeSelectUnit(event.target.value, item.id)}
                                                         >
                                                             <option value='0'>Hộp</option>
                                                             <option value={item.unitId_main}>{item.unit}</option>
@@ -215,7 +258,13 @@ const NewrOrder = () => {
                     </div>
                 </div>
                 <div className='confirm p-4'>
-                    <ConfirmOrder total={totalOrder} listItemOrder={orderItems} handleSuccess={handleSuccessfullOrder} />
+                    <ConfirmOrder 
+                        actionOrder={acctionOrder}
+                        total={totalOrder} 
+                        listItemOrder={orderItems}
+                        handleSuccess={handleSuccessfullOrder} 
+                        customerData = {dataCustomer}
+                    />
                 </div>
             </div>
 

@@ -1,0 +1,38 @@
+.ware-house {
+    min-height: 100vh;
+    position: relative;
+    .nav-container {
+        margin-top: 64px;
+        position: fixed;
+        width: 15%;
+        background-color: #BFF6C3;
+        color: #141E46;
+        padding-left: 16px;
+        padding-top: 16px;
+        z-index: 0;
+        top: 0;
+        left: 0;
+        overflow-y: auto; // Cho phép nội dung trong nav-container bị cuộn
+        min-height: 100vh; // Thiết lập chiều cao của nav-container bằng với chiều cao của cửa sổ
+        .title-nav {
+                
+        }
+        .nav-content {
+            text-decoration: none;
+            color: #141E46;
+            padding-top: 12px;
+            font-size: 20px;
+        }
+        .nav-content:hover {
+            opacity: 0.5;
+        }
+    }
+    .body-content-ware-house {
+        flex: 1;
+        background-color: #FFF5E0;
+        overflow-y: auto;
+        margin-left: 15%;
+        padding-left: 16px; // Tương ứng với độ rộng của nav-container
+    }
+}
+

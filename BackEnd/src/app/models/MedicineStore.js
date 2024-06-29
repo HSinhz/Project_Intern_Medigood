@@ -5,8 +5,8 @@ const MedicineBranch = new Schema (
     {
         BranchId: {type: String, required: true},
         MedicineId: {type: Number, required: true},
-        Quantity: {type: Number, default: 0}
-
+        Inventory: {type: Number, default: 0},
+        Stock: {type: Number, default: 0},
     },{
         timestamps: true,
     }

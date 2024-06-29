@@ -1,6 +1,5 @@
 import { useEffect, useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useUser } from '../../views/UserContext';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Accordion from 'react-bootstrap/Accordion';
@@ -15,7 +14,6 @@ import ModalCreateEmployee from './ModalCreateEmployee';
 import ModalDeleteEmployee from '../ModalDeleteEmployee';
 import { getEmployeeWithPagination } from '../../services/PersonnelService';
 const Personnel = () => {
-    const { user } = useUser();
     const history = useHistory();
     const [isShowModalCreateEmployee, setIsShowModalCreateEmployee] = useState(false);
     const [acctionModal, setActionModal] = useState(''); 
@@ -37,10 +35,7 @@ const Personnel = () => {
 
     useEffect(() => {
         document.title = 'Nhân sự';
-        console.log(user.isAuthenticated);
-        if(!user.isAuthenticated){
-            history.push('/login');
-        }
+        
         fectDataEmloyee();
     }, []);
 

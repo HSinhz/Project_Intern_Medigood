@@ -11,11 +11,14 @@ const Medicine = new Schema ({
     Unit : {type: Number},
     ViePerBox: {type: Number},
     ViePerBlis: {type: Number, default: null},
-    
     ImgUrl : {type: String, required: true},
     Producer: {type: String, required: true},
     Ingredient: {type: String, required: true},
     Specification : {type: String, required: true},
+    Inventory: {type: Number, default: 0},
+    Stock: {type: Number, default: 0},
+    ObjectStatus: {type: Number, default: 2},
+    Status: {type: Number, default: 1},
     Description:  {type: String},
 })
 

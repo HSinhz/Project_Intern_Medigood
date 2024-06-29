@@ -51,7 +51,7 @@ const ModalChoose = (props) => {
     const handleChooseProduct = (medicine) => {
         // Thêm sản phẩm đã chọn vào danh sách orderItems
         const newOrderItem = {
-            meidicineId: medicine.MedicineId,
+            medicineId: medicine.MedicineId,
             img: medicine.ImgUrl,
             product: medicine.MedicineName,
             price: medicine.Price,
@@ -60,7 +60,8 @@ const ModalChoose = (props) => {
             unitId_main: medicine.UnitId,
             viePerBox: medicine.ViePerBox,
             viePerBlis: medicine.ViePerBlis,
-            quantity: 1 // Số lượng mặc định
+            quantity: 1, // Số lượng mặc định
+            stock: medicine.Stock
         };
         props.addOrderItem(newOrderItem);
         handleCloseModal();
@@ -74,7 +75,8 @@ const ModalChoose = (props) => {
                 </Modal.Header>
                 <Modal.Body className='modal-body'>
                     <div className='d-flex justify-content-around mb-4'>
-                        <input type='text' className='form-control' onChange={(event) => handleSearch(event.target.value, 'SearchItem')} value={searchTerm}/>
+                        <input type='text' className='form-control' placeholder='Nhập tên sản phẩm...'
+                            onChange={(event) => handleSearch(event.target.value, 'SearchItem')} value={searchTerm}/>
                         <div className='mx-2'>
                             <button className='btn btn-success'
                             ><AiOutlineSearch/></button>

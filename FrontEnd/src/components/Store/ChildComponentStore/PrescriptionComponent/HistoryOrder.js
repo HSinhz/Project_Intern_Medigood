@@ -5,9 +5,9 @@ import moment from 'moment';
 import { FaAddressCard } from "react-icons/fa";
 import ReactPaginate from 'react-paginate';
 import { Link, useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { documentTile } from '../../../../utils/documentTitle';
 
-
-const HistoryOrder = ({ showDetailOrder , setNameComponent }) => {
+const HistoryOrder = ({ setNameComponent }) => {
     const history = useHistory();
     const [listPrescription, setListPrescription] = useState([]);
     const [phoneCustomer, setPhoneCustomer] = useState('');
@@ -16,7 +16,8 @@ const HistoryOrder = ({ showDetailOrder , setNameComponent }) => {
     const [totalPages, setTotalPages] = useState(0);
     const [listPrescriptionPhone, setListPrescriptionPhone] = useState([]);
     const [confirmPhone, setConfirmPhone] = useState(false);
-    useEffect(() => {
+    useEffect(() => {   
+        document.title = documentTile.Store.HistoryPrescription
         fetchDataPrescriptionWithBranch();
     }, [currentPage]);
     useEffect(() => {
@@ -34,7 +35,6 @@ const HistoryOrder = ({ showDetailOrder , setNameComponent }) => {
     
     const fetchDataPrescriptionWithBranch = async () => {
         try {
-            console.log("Goi roi ne")
             let response = await fetchDataAllPrescriptionWithBranch(phoneCustomer, currentPage, currentLimt);
             if( response && response.Success === true){
                 setListPrescription(response.Data);
@@ -85,7 +85,7 @@ const HistoryOrder = ({ showDetailOrder , setNameComponent }) => {
                 { listPrescriptionPhone && listPrescriptionPhone.length > 0 ?  
                     <>
                         <div className="table-history-order">
-                            <table   class="order-history">
+                            <table className="order-history">
                                 <thead>
                                     <tr>
                                         <th className="ps-4">Mã đơn hàng</th>

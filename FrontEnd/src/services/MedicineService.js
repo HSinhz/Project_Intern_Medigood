@@ -1,8 +1,13 @@
 import axios from "../config/axios";
-
+import { toast } from "react-toastify";
 
 const showMedicine = async (Id, choose, page, limit) => {
     const response = await axios.get(`/medicine/show/?kind=${choose}&id=${Id}&page=${page}&limit=${limit}`);
+    return response.data;
+}
+
+const getAllMedic = async () => {
+    const response = await axios.get('/show/medicine/all/');
     return response.data;
 }
 
@@ -45,6 +50,37 @@ const deleteMedicine = async (medicineId) => {
     const response = await axios.delete(`/delete/medicine/${medicineId}`);
     return response.data;
 }
+
+const createSupplier = async (dataSupplier) => {
+    const response = await axios.post('/create/supplier/', dataSupplier);
+    return response.data;
+}
+
+const getSupplier = async () => {
+    const response = await axios.get('/get/supplier/');
+    return response.data;
+}
+
+const createPurchaseOrder = async (SupplierId, DataMedicPurchase, TotalQuantity, TotalPurchase) => {
+    const response = await axios.post('/create/purchase/', 
+    {SupplierId, DataMedicPurchase, TotalQuantity, TotalPurchase });
+    return response.data;
+}
+
+const createDistributeOrder = async (Branch, TotalQuantity, ListMedicine, Employee) => {
+    const response = await axios.post('/create/distribute/', 
+    {Branch, TotalQuantity, ListMedicine, Employee });
+    return response.data;
+}
+
+const getMedicineStockWithId = async (listMedicine) => {
+    const response = await axios.post(`/get/medicine/stock/`, {
+        listMedicine
+    });
+    return response.data;
+}
+
+
 export  {
     showMedicine,
     getCategory,
@@ -54,5 +90,11 @@ export  {
     getUnit,
     editMedicine,
     deleteMedicine,
-    getCategoryByIdType
+    getCategoryByIdType,
+    getAllMedic,
+    createSupplier,
+    getSupplier,
+    createPurchaseOrder,
+    createDistributeOrder,
+    getMedicineStockWithId
 }

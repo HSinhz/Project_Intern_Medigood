@@ -1,0 +1,164 @@
+.distribute-container {
+    .list-distribute-order {
+        .table-list-distribution {
+            width: 100%;
+            thead {
+                background-color: lightgrey;
+                height: 48px ;
+                th {
+                    width: calc(100% / 6);
+                }
+            }
+            tbody {
+                tr {
+                    height: 48px;
+                }
+                tr:not(:last-child) {
+                    border-bottom: 1px solid #ddd; /* Màu và kiểu đường kẻ bạn có thể điều chỉnh tùy ý */
+                }
+                .table-row {
+                    transition: background-color 0.3s ease;
+                }
+                
+                .table-row:hover {
+                    background-color: rgb(232, 229, 229);
+                    cursor: pointer;
+                }
+                .is-input {
+                    background-color: rgb(214, 255, 220);
+                    border: 1px solid rgb(14, 170, 0);
+                    color:  rgb(14, 170, 0);
+                }
+                
+                .not-input {
+                    background-color: rgb(250, 255, 178);
+                    border: 1px solid rgb(187, 162, 0);
+                    color:  rgb(187, 162, 0);
+                }
+                
+                 
+                .border-context {
+                    padding: 2px 10px;
+                    border-radius: 50px;
+                }
+            }
+        }
+    }
+}
+
+.create-distribute-container {
+    .infor-branch, .infor-medic {
+        .results-container {
+            position: relative;
+            .results-list {
+                position: absolute;
+                top: 100%; /* Adjust this value if needed */
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                max-width: 60%;
+                max-height: 300px; /* Adjust the height as needed */
+                overflow-y: auto;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                .result-item {
+                    display: block;
+                    padding: 8px;
+                    text-decoration: none;
+                    color: inherit;
+                    .row-item {
+                        align-items: center;
+                    }
+                    
+                }
+                .result-item:hover {
+                    background-color: lightgray;
+                    cursor: pointer;
+                }
+            }
+        }
+        .form-infor {
+            .status {
+                color:  rgb(14, 170, 0);
+            }
+        }
+    }
+    .infor-branch {
+        flex: 3;
+        .btn-delete-branch:hover {
+            opacity: 0.5;
+            cursor: pointer;
+        }
+    }
+    .infor-employee {
+        flex: 2;
+    }
+
+    .infor-medic {
+        .table-medic {
+            table {
+                width: 100%;
+                thead {
+                    height: 48px;
+                    background-color: lightgray;
+                    .width-5 {
+                        width: calc(100% / 5);
+                    }
+                    .width-2 {
+                        width: calc( (100% - (20% * 5)) / 2);
+                    }
+                }
+                tbody {
+                    // .btn-delete {
+                    //     width: 50px !important;
+                    // }
+                    // .img-medic {
+                    //     width: 50px !important;
+                    // }
+                }
+            }
+        }
+        .line {
+            height: 1px;
+            background-color:lightgrey;
+        }
+        .muiGridLeft {
+            width: calc( 100% - (100% / 3 ));
+        }
+        .muiGridRight{
+            width: calc(100%/3);
+            .totalQuantity {
+                font-size: 24px;
+            }
+            .muiListItem {
+                line-height: 46px;
+                text-align: left;
+                align-items: flex-end;
+                .muiListItemText {
+                    flex: 1 1 auto;
+                }
+                .muiListItemText-alignRight {
+                    display: block;
+                    text-align: right;
+                }
+            }
+        }
+    }
+
+    .infor-branch, .infor-employee {
+        .gridViewLeft {
+            width: 80%;
+            .muiListItem {
+                display: flex;
+                line-height: 46px;
+                .muiListItemText {
+                    flex: 1 1 ;
+                }
+                .muiListItemRight {
+                    text-align: right;
+                }
+            }
+        }
+    }
+}

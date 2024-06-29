@@ -2,7 +2,7 @@ const { parse } = require("dotenv");
 require("dotenv").config();
 const FireBaseService = require("../../Services/FireBaseService");
 const MedicinService = require("../../Services/MedicineService");
-const {checkReqUser} = require('../../util/checkReqUser')
+const {checkReqUser, checkReqBody} = require('../../util/checkReqUser')
 
 class MedicineController {
     async showMedicine( req, res) {
@@ -22,6 +22,25 @@ class MedicineController {
             return res.status(500).json({
                 Success: false,
                 Mess: 'Error From Server'
+            })
+        }
+    }
+
+    async getAllMedic( req, res){
+        try {
+            let check = checkReqUser(req.user);
+            if( check.Success === true){
+                let data = await MedicinService.getAllMedic(req.user.email)
+                console.log(data);
+                return res.status(data.Type).json({data: data})
+            }
+            return res.status(check.Type).json({data: check});
+            
+        } catch (error) {
+            console.log("Error Controller", error);
+            return res.status(500).json({
+                Success: false,
+                Mess: 'Vui lòng thử lại sau 1111'
             })
         }
     }
@@ -216,7 +235,6 @@ class MedicineController {
 
     async getCategoryMedicineByType(req, res){
         try {
-            console.log('vao roi ne')
             let check = checkReqUser(req.user);
             if( check.Success === true){
                 if(req.params.typeId !== ''){
@@ -231,6 +249,69 @@ class MedicineController {
             }
             return res.status(check.Type).json({data: check});
             
+        } catch (error) {
+            console.log("Error Controller", error);
+            return res.status(500).json({
+                Success: false,
+                Mess: 'Vui lòng thử lại sau 1111'
+            })
+        }
+    }
+
+    async createSupplier(req, res) {
+        try {
+            let check = checkReqUser(req.user);
+            if( check.Success === true){
+                let checkBody = checkReqBody(req.body);
+                if(checkBody.Success === true){
+                    console.log("eq.body ", req.body)
+                    let data = await MedicinService.createSupplier(req.user.email, req.body);
+                    return res.status(data.Type).json({data: data})
+                }
+                return res.status(checkBody.Type).json({data: checkBody});
+            }
+            return res.status(check.Type).json({data: check});
+            
+        } catch (error) {
+            console.log("Error Controller", error);
+            return res.status(500).json({
+                Success: false,
+                Mess: 'Vui lòng thử lại sau 1111'
+            })
+        }
+    }
+
+    async getSupplier(req, res){
+        try {
+            let check = checkReqUser(req.user);
+            if( check.Success === true){
+               let data = await MedicinService.getSupplier(req.user.email);
+               return res.status(data.Type).json({data:data})
+            }
+            return res.status(check.Type).json({data: check});
+            
+        } catch (error) {
+            console.log("Error Controller", error);
+            return res.status(500).json({
+                Success: false,
+                Mess: 'Vui lòng thử lại sau 1111'
+            })
+        }
+    }
+
+    async getMedicineStock (req, res) {
+        try {
+            console.log("Req.body getMedicineStock: ", req.body.listMedicine);
+            let check = checkReqUser(req.user);
+            if( check.Success === true){
+                let checkBody = checkReqBody(req.body);
+                if(checkBody.Success === true) {
+                    let data = await MedicinService.getMedicineStock(req.user.email, req.body.listMedicine);
+                    return res.status(data.Type).json({data:data})
+                }
+                return res.status(checkBody.Type).json({data: checkBody});
+            }
+            return res.status(check.Type).json({data: check});
         } catch (error) {
             console.log("Error Controller", error);
             return res.status(500).json({

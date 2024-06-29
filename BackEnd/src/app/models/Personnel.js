@@ -28,7 +28,9 @@ const Personnel = new Schema({
         OnlineRecent: {type: Number},
         OnlineTotal: {type: Number, default: 0},
         TotalOrder: {type: Number, default: 0},
-        Decscription: {type: String}
+        Decscription: {type: String},
+        ObjectStatus: {type: Number, default: 1},
+        Status: {type: Number, default: 1},
     },
     {
         timestamps: true,

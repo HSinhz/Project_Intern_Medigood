@@ -1,0 +1,20 @@
+.form-search {
+    .input-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        .icon {
+            position: absolute;
+            left: 10px; /* Điều chỉnh khoảng cách giữa biểu tượng và input */
+            pointer-events: none; /* Đảm bảo biểu tượng không thể chọn */
+            font-size: 24px;
+        }
+    }
+    .input-medicine {
+        width: 60%;
+        height: 38px;
+        outline: none !important;
+        padding-left: 36px; /* Đảm bảo khoảng cách giữa biểu tượng và input */
+
+    }
+}

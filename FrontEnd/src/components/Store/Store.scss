@@ -1,13 +1,35 @@
 .my-store {
-    .nav-right {
-        width: 80px !important;
-
+    min-height: 100vh;
+    position: relative;
+    .nav-store {
+        margin-top: 64px;
+        position: fixed;
+        background-color: #B0EBB4;
+        width: 64px;
+        padding-left: 16px;
+        padding-top: 16px;
+        // z-index: 0;
+        // top: 0;
+        // overflow-y: auto; // Cho phép nội dung trong nav-container bị cuộn
+        min-height: 100vh; // Thiết lập chiều cao của nav-container bằng với chiều cao của cửa sổ
+        .nav-link {
+            text-decoration: none;
+            color: #141E46;
+            padding-top: 12px;
+            font-size: 28px;
+        }
+        .nav-link:hover {
+            background-color: #BFF6C3;
+            cursor: pointer;
+        }
+    }
+    .body-content-branch {
+        flex: 1;
+        background-color: #f1f0f0;
+        margin-left: 56px;
+        margin-top: 60px;
+        padding-left: 16px; // Tương ứng với độ rộng của nav-container
+        padding-right: 16px;
     }
 }
 
-.nav-store {
-    .nav-link:hover {
-        opacity: 0.3;
-        color: #ffffff;
-    }
-}

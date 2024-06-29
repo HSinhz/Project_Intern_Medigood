@@ -2,6 +2,9 @@ const Branch = require('../app/models/Branch');
 const Medicine = require('../app/models/Medicine');
 const Personnel = require('../app/models/Personnel');
 const Customer = require("../app/models/Customer");
+const Supplier = require("../app/models/Supplier");
+const Distribute = require("../app/models/Distribution");
+
 const {INTERNAL_ERROR, NO_LOGGIN, OK} = require('../config/db/httpCode')
 
 const checkExistBranch = async (BranchId) => {
@@ -101,10 +104,62 @@ const checkExistCustomer = async (Phone) => {
     }
 }
 
+const checkExistSupplier = async (SupplierId) => {
+    try {
+        let existSupplier = await Supplier.findOne({SupplierId: SupplierId});
+        console.log()
+        if(existSupplier) {
+            return {
+                Success: true,
+                Mess: "OKKK",
+                Type: OK
+            }
+        }
+        return {
+            Success: false,
+            Mess: "Nhà cung cấp không tồn tại tồn tại",
+            Type: OK
+        }
+    } catch(error){
+        console.log("Error Service: ", error);
+        return {
+            Success: false,
+            Mess: 'Vui lòng thử lại',
+            Type: INTERNAL_ERROR
+        }
+    }
+}
+
+const checkExistDistribute = async (DistributeId) => {
+    try {
+        let existDistribute = await Distribute.findOne({DistributeId: DistributeId});
+        if(existDistribute) {
+            return {
+                Success: true,
+                Mess: "OKKK",
+                Type: OK
+            }
+        }
+        return {
+            Success: false,
+            Mess: "Nhà cung cấp không tồn tại tồn tại",
+            Type: OK
+        }
+    } catch(error){
+        console.log("Error Service: ", error);
+        return {
+            Success: false,
+            Mess: 'Vui lòng thử lại',
+            Type: INTERNAL_ERROR
+        }
+    }
+}
 module.exports = {
     checkExistBranch: checkExistBranch,
     checkExistMedicine: checkExistMedicine,
     checkExistPersonnel: checkExistPersonnel,
-    checkExistCustomer: checkExistCustomer
+    checkExistCustomer: checkExistCustomer,
+    checkExistSupplier: checkExistSupplier,
+    checkExistDistribute: checkExistDistribute
 
 }

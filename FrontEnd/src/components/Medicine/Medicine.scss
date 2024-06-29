@@ -1,10 +1,252 @@
 .medicine {
-    .vertical-align-middle {
-        vertical-align: middle;
-        .witd-td-name{
-            width: 400px;
+    min-height: 100vh;
+    position: relative;
+    .nav-container {
+        margin-top: 64px;
+        position: fixed;
+        width: 15%;
+        background-color: #BFF6C3;
+        color: #141E46;
+        padding-left: 16px;
+        padding-top: 16px;
+        z-index: 0;
+        top: 0;
+        left: 0;
+        overflow-y: auto; // Cho phép nội dung trong nav-container bị cuộn
+        min-height: 100vh; // Thiết lập chiều cao của nav-container bằng với chiều cao của cửa sổ
+        .title-nav {
+                
+        }
+        .nav-content {
+            text-decoration: none;
+            color: #141E46;
+            padding-top: 12px;
+            font-size: 20px;
+        }
+        .nav-content:hover {
+            opacity: 0.5;
         }
     }
+    .body-content-medicine {
+        flex: 1;
+        background-color: #f1f0f0;
+        margin-left: 15%;
+        margin-top: 60px;
+        padding-left: 16px; // Tương ứng với độ rộng của nav-container
+        padding-right: 16px;
+        .form-search-medicine {
+            .input-container {
+                position: relative;
+                display: flex;
+                align-items: center;
+                .icon {
+                    position: absolute;
+                    left: 10px; /* Điều chỉnh khoảng cách giữa biểu tượng và input */
+                    pointer-events: none; /* Đảm bảo biểu tượng không thể chọn */
+                    font-size: 24px;
+                }
+            }
+            .input-medicine {
+                width: 60%;
+                height: 38px;
+                outline: none !important;
+                padding-left: 36px; /* Đảm bảo khoảng cách giữa biểu tượng và input */
+    
+            }
+        }
+        // .body-content-medicine-container {
+        //     background-color: white !important;
+        //     width: 100%;
+        //     min-height: 90% ;
+        // }
+        .ware-house, .list-medicine {
+            table {
+                .img-personnel-container {
+                    width: 150px;
+                }
+                tbody {
+                    .table-row:hover {
+                        opacity: 0.5;
+                        cursor: pointer;
+                    }
+                    tr {
+                        height: max-content;
+                        td {
+                            vertical-align: middle;
+                        }
+                        .witd-td-name{
+                            width: 400px;
+                        }
+                    }
+                    
+                }
+            }
+        }
+        .list-medicine {
+            .medicine-footer {
+                display: flex;
+                justify-content: center;
+            }
+           
+        }
+        .import-goods {
+            .table-import {
+                width: 100%;
+                thead {
+                    th {
+                        width: calc(100% / 6);
+                    }
+                    .th-value {
+                        text-align: right;
+                    }
+                }
+            }
+        }
+        .create-purchase {
+            width: 100%;
+            min-height: 90% ;
+            .infor-producer {
+                flex: 2;
+                .results-container {
+                    .results-list {
+                        .row-medicine:hover {
+                            background-color: lightgrey;
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+            .infor-purchase-order {
+                flex: 1;
+            }
+            .infor-detail {
+                .table-medicine {
+                    padding: 0 !important;
+                    table {
+                        width: 100%;
+                        .text-right {
+                            text-align: right;
+                        }
+                        thead {
+                            background-color: #f3f3f3;
+                            height: 40px;
+                            th {
+                                width: calc(100% /7);
+                            }
+                        }
+                    }
+                }
+                .results-container {
+                    position: relative;
+                    .results-list {
+                        position: absolute;
+                        top: 100%; /* Adjust this value if needed */
+                        left: 0;
+                        right: 0;
+                        z-index: 1000;
+                        background-color: #fff;
+                        border: 1px solid #ddd;
+                        max-width: 60%;
+                        max-height: 300px; /* Adjust the height as needed */
+                        overflow-y: auto;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        .list-medicine {
+                            display: block;
+                            padding: 8px;
+                            text-decoration: none;
+                            color: inherit;
+
+                            .row-medicine {
+                                align-items: center;
+                            }
+                        }
+                    }
+                }
+                .line {
+                    height: 1px;
+                    background-color:lightgrey;
+                }
+                .muiGridLeft {
+                    width: calc( 100% - (100% / 3 ));
+                }
+                .muiGridRight{
+                    width: calc(100%/3);
+                    .muiListItem {
+                        line-height: 46px;
+                        text-align: left;
+                        align-items: flex-end;
+                        .muiListItemText {
+                            flex: 1 1 auto;
+                        }
+                        .muiListItemText-alignRight {
+                            display: block;
+                            text-align: right;
+                        }
+                    }
+                }
+                
+            }
+        }
+        .supplier-container {
+            .header-context {
+                margin-top: 16px;
+
+            }
+            .table-list-supplier {
+                table {
+                    thead {
+                        th {
+                            width: calc(100% / 5);
+                        }
+                    }
+                    tbody {
+                        .supplier-status {
+                            color: #20a917;
+                        }
+                        tr {
+                            height: 48px;
+                        }
+                        tr:not(:last-child) {
+                            border-bottom: 1px solid #ddd; /* Màu và kiểu đường kẻ bạn có thể điều chỉnh tùy ý */
+                        }
+                        .table-row {
+                            transition: background-color 0.3s ease;
+                        }
+                        
+                        .table-row:hover {
+                            background-color: lightgrey;
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+        }
+
+        .supplier-container, .create-supplier-container {
+            .btn-create-supplier {
+                border: none !important;
+                background-color: #08f;
+                color: white;
+                padding: 0 16px;
+            }
+            .btn-create-supplier:hover {
+                background-color: rgb(0, 80, 149);
+            }
+        }
+        .create-supplier-container{
+            width: 60%;;
+            .header-context {
+                .btn-cancel {
+                    border: 1px solid #b9b9b9;
+                    padding: 0 16px;
+                }
+                .btn-cancel:hover {
+                    background-color: #dadada;
+                }
+            }
+        }
+    }
+
 }
 
 .nav-category {

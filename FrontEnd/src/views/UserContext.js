@@ -1,14 +1,18 @@
 import React,  { useState } from "react";
 
-const UserContext = React.createContext();
+const UserContext = React.createContext(null);
 
-export const UserProvider  =  ({ children }) => {
-    // User is the name of the "data" that gets stored in context
-    // const [user, setUser] = React.useState({ name: 'ssssss', auth: false });
-    const [user, setUser] = useState(
-        JSON.parse(localStorage.getItem("account")) || { isAuthenticated: false, Mess: '' }
+const UserProvider  =  ({ children }) => {
+    
+    const [user, setUser] = useState( JSON.parse(localStorage.getItem("account")) ||
+        { 
+            isAuthenticated: false, 
+            Mess: '',
+            PersonnelName: '',
+            Email: '',
+            Position: '',
+        }
     );
-
     // Login updates the user data with a name parameter
     const  loginContext = (userData) => {
         setUser(  userData );
@@ -29,6 +33,4 @@ export const UserProvider  =  ({ children }) => {
     );
 }
 
-export const useUser = () => React.useContext(UserContext)
-
-export default UserContext
+export { UserContext, UserProvider}

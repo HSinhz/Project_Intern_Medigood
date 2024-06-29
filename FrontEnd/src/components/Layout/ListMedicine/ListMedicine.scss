@@ -1,0 +1,44 @@
+.list-medicine {
+    width: 100%;
+    .table-medicine {
+        background-color: white;
+        width: 100%;
+        thead {
+            background-color: lightgrey;
+        height: 48px ;
+            th {
+                width: calc(100% / 6);
+            }
+        }
+        .img-personnel-container {
+            width: 150px;
+        }
+        tbody {
+            tr {
+                height: 48px;
+            }
+            tr:not(:last-child) {
+                border-bottom: 1px solid #ddd; /* Màu và kiểu đường kẻ bạn có thể điều chỉnh tùy ý */
+            }
+            .table-row {
+                width: 500px;
+                transition: background-color 0.3s ease;
+            }
+            
+            .table-row:hover {
+                opacity: 0.5;
+                cursor: pointer;
+            }
+            tr {
+                height: max-content;
+                td {
+                    vertical-align: middle;
+                }
+                .witd-td-name{
+                    width: 400px;
+                }
+            }
+            
+        }
+    }
+}

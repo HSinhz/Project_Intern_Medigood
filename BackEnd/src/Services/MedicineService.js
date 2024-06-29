@@ -5,9 +5,12 @@ const Category = require('../app/models/Category');
 const Unit = require('../app/models/Unit');
 const MedicineBranch = require('../app/models/MedicineStore');
 const Branch = require('../app/models/Branch');
-const {createIdMedicine} = require('../util/createId')
-const {checkExistPersonnel, checkExistMedicine} = require('../util/checkExist');
+const Supplier = require('../app/models/Supplier');
+const GroupStatus = require('../app/models/GroupStatus');
 
+const {createIdMedicine, createIdSupplier, createIdPurchase} = require('../util/createId')
+const {checkExistPersonnel, checkExistMedicine, checkExistSupplier} = require('../util/checkExist');
+const {OK, INTERNAL_ERROR} = require("../config/db/httpCode");
 
 const showMedicine = async ( kind, id, page, limit  , Email) => {
     try {
@@ -58,6 +61,8 @@ const showMedicine = async ( kind, id, page, limit  , Email) => {
                         Producer: 1,
                         Ingredient: 1,
                         Specification: 1,
+                        Inventory: 1,
+                        Stock: 1,
                         Description: 1,
                         Unit: 1,
                         CategoryName: "$CategoryInfor.CategoryName",
@@ -425,6 +430,187 @@ const getCategoryMedicineByType = async (TypeId, Email) => {
         }
     }
 }
+
+const getAllMedic = async (Email) => {
+    try {
+        let existEmployee = await checkExistPersonnel(Email);
+        if(existEmployee.Success === true){
+            let data = await Medicine.aggregate([
+                {
+                    $lookup: {
+                        from: 'units',
+                        localField: 'Unit',
+                        foreignField: 'Id',
+                        as: 'UnitInfor'
+                    }
+                }, {
+                    $unwind: "$UnitInfor"
+                }, {
+                    $project: {
+                        MedicineId: 1,
+                        MedicineName: 1,
+                        Price: 1,
+                        ViePerBox: 1,
+                        ViePerBlis: 1,
+                        ImgUrl: 1,
+                        Unit: 1,
+                        UnitName: "$UnitInfor.UnitName",
+                        Stock: 1,
+                        Inventory: 1
+                    }
+                }
+            ]);
+            console.log("data: ", data)
+            return {
+                Success: true,
+                Mess: 'Successfully',
+                Type: 200,
+                Data: data
+            }
+        }
+        return existEmployee;
+    } catch(error){
+        console.log("Error Service: ", error);
+        return {
+            Success: false,
+            Mess: 'Vui lòng thử lại',
+            Type: 500
+        }
+    }
+}
+
+const createSupplier = async (Email, SupplierData) =>{
+    try {
+        let existEmployee = await checkExistPersonnel(Email);
+        if(existEmployee.Success === true){
+            let existSupplier = await checkExistSupplier(SupplierData.SupplierEmail);
+            if(existSupplier.Success === true){
+                return {
+                    Success: false,
+                    Mess: 'Nhà cung cấp đã tồn tại',
+                    Type: OK
+                }
+            }
+            let SupplierId = createIdSupplier(SupplierData.SupplierName);
+            console.log(SupplierId)
+            const newSupplier = new Supplier({
+                SupplierId: SupplierId,
+                SupplierEmail: SupplierData.SupplierEmail,
+                SupplierPhone: SupplierData.SupplierPhone,
+                SupplierName: SupplierData.SupplierName,
+                SupplierAddress: SupplierData.SupplierAddress1,
+            });
+            let saveSupplier = await newSupplier.save();
+            if(saveSupplier.SupplierId) {
+                return {
+                    Success: true,
+                    Mess: 'Thêm mới nhà cung cấp thành công',
+                    Type: OK,
+                }
+            }
+            return {
+                Success: false,
+                Mess: "Thêm nhà cung cấp mới thất bại. Vui lòng thử lại sau",
+                Type: OK
+            }
+        }
+        return existEmployee;
+    } catch(error){
+        console.log("Error Service: ", error);
+        return {
+            Success: false,
+            Mess: 'Vui lòng thử lại',
+            Type: INTERNAL_ERROR
+        }
+    }
+}
+
+const getSupplier = async ( Email ) => {
+    try {
+        let existEmployee = await checkExistPersonnel(Email);
+        if(existEmployee.Success === true){
+            let dataSupplier = await Supplier.aggregate([
+                {
+                    $project: {
+                        SupplierId: 1,
+                        SupplierEmail: 1,
+                        SupplierPhone: 1,
+                        ObjectStatus: 1,
+                        SupplierName: 1,
+                        SupplierAddress: 1,
+                        SupplierAddress2: 1,
+                        Status: 1,
+                    }
+                }
+            ]);
+            for( let index = 0 ; index < dataSupplier.length; index++){
+                let status = await GroupStatus.findOne({
+                    ObjectStatus: dataSupplier[index].ObjectStatus,
+                    StatusId: dataSupplier[index].Status
+                }).select("StatusName")
+                if (status) {
+                    console.log("GroupStatus found: ", status.StatusName);
+                    dataSupplier[index].StatusName = status.StatusName;
+                } else {
+                    console.log("No matching GroupStatus found for Supplier at index: ", index);
+                    dataSupplier[index].StatusName = "Unknown"; // Or some default value
+                }
+            }
+            
+            console.log("dataSupplier: ", dataSupplier)
+
+            if( dataSupplier && dataSupplier.length > 0){
+                return {
+                    Success: true,
+                    Mess: 'Data Supplier',
+                    Type: OK,
+                    Data: dataSupplier
+                }
+            }
+            return {
+                Success: false,
+                Mess: 'Không có dữ liệu',
+                Type: OK
+            }
+        }
+        return existEmployee;
+    } catch(error){
+        console.log("Error Service: ", error);
+        return {
+            Success: false,
+            Mess: 'Vui lòng thử lại',
+            Type: INTERNAL_ERROR
+        }
+    }
+}
+
+const getMedicineStock = async (Email, DataMedicine) => {
+    try {
+        let existEmployee = await checkExistPersonnel(Email);
+        if(existEmployee.Success === true){
+            let dataStockMedicine = [];
+            for (let index = 0; index < DataMedicine.length; index++) {
+                let stockMedicine = await Medicine.findOne({MedicineId: DataMedicine[index].MedicineId}).select("MedicineId Stock");
+                dataStockMedicine[index] = stockMedicine;
+            }
+            return {
+                Success: true,
+                Mess: "OKKKK",
+                Type: OK,
+                Data: dataStockMedicine,
+            }
+        }
+        return existEmployee;
+    } catch(error){
+        console.log("Error Service: ", error);
+        return {
+            Success: false,
+            Mess: 'Vui lòng thử lại',
+            Type: INTERNAL_ERROR
+        }
+    }
+}
+
 module.exports = {
     showMedicine: showMedicine,
     getTypeMedicine: getTypeMedicine,
@@ -434,5 +620,10 @@ module.exports = {
     getUnit: getUnit,
     editMedicine: editMedicine,
     deleteMedicine: deleteMedicine,
-    getCategoryMedicineByType:getCategoryMedicineByType
+    getCategoryMedicineByType:getCategoryMedicineByType,
+    getAllMedic: getAllMedic,
+    createSupplier: createSupplier,
+    getSupplier: getSupplier,
+    getMedicineStock: getMedicineStock
+   
 }

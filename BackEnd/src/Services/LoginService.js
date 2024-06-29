@@ -6,7 +6,7 @@ const GroupRole = require('../app/models/GroupRole');
 const handlerLogin = async ( userData) => {
     try{
         let data = {};
-        let existUser = await Personnel.findOne({ Email: userData.Email})
+        let existUser = await Personnel.findOne({ Email: userData.Email});
             if( existUser ){
                 let checkpass =  checkPassWord( userData.Password, existUser.Password);
                 if( checkpass ){
@@ -27,10 +27,15 @@ const handlerLogin = async ( userData) => {
                                 Access_token: accessToken,
                                 Refresh_token: refreshToken
                             }
-                        }).catch( err => { console.error(err); })
+                        }).catch( err => { console.error(err); });
+                        let PersonnelName = existUser.LastName + " " +existUser.FirstName
+                        console.log("PersonnelName: ", PersonnelName);
                         return {
                             Success :true,
                             Mess : 'Đăng nhập thành công',
+                            PersonnelName: PersonnelName,
+                            Email: existUser.Email,
+                            Position: existUser.PositionId,
                             access_token:  accessToken,
                         }        
                     

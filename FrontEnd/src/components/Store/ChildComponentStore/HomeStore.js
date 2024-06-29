@@ -1,26 +1,19 @@
 import { useEffect, useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useUser } from '../../../views/UserContext';
 import { getStoreById } from '../../../services/StoreBranchService';
 import { toast } from 'react-toastify';
-import { get } from 'lodash';
-const HomeStore = ({data, setData}) => {
-    const { user } = useUser();
+const HomeStore = () => {
     const history = useHistory();
-
     const [dataStore, setDataStore] = useState({})
-    useEffect(() => {
-        console.log(user.isAuthenticated);
-        if(!user.isAuthenticated){
-            history.push('/login');
-        }
+    useEffect( () => {
+        
         const fetchDataBranchStore = async () => {
             try {
                 let response = await getStoreById();
                 if(response && response.Success === true){
-                    console.log("response.Data Store: ", response.Data)
+                    console.log("response.Data Store: ", response.Data.Address)
                     setDataStore(response.Data);
-                    setData(response.Data)
+                    document.title = response.Data.Address
                 } else {
                     toast.error(response.Mess)
                 }
@@ -29,7 +22,7 @@ const HomeStore = ({data, setData}) => {
                 toast.error("Vui lòng thử lại sau")
             }
         }
-        fetchDataBranchStore()
+        fetchDataBranchStore();
     }, []);
 
     

@@ -26,3 +26,16 @@ module.exports.checkReqParams = (params) => {
         Type: OK
     }
 }
+
+module.exports.checkReqBody = (body) => {
+    if(body){
+        return {
+            Success: true
+        }
+    }
+    return {
+        Success: false,
+        Mess: 'Không tồn tại',
+        Type: OK
+    }
+}

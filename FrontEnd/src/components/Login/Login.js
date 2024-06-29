@@ -7,9 +7,10 @@ import { loginUser} from '../../services/userService'
 import useCheckLogin from '../../utils/checkLogin';
 import '../style.scss';
 import validateLogin from '../../utils/validates/validateLogin';
-import { useUser } from '../../views/UserContext';
+import { UserContext } from '../../views/UserContext';
+import Personnel from '../Personnel/Personnel';
 const Login = (props) => {
-    const {loginContext} = useUser();
+    const {loginContext} = useContext(UserContext);
     const [Email, setEmail] = useState("");
     const [Password, setPassword] = useState("");
     const [dataLogin, setDataLogin] = useState({})
@@ -46,11 +47,13 @@ const Login = (props) => {
         if(response && response.Success === true){
             let data = {
                 isAuthenticated: true,
-                Mess: 'Logined'
+                Mess: 'Logined',
+                PersonnelName: response.PersonnelName,
+                Email: response.Email,
+                Position: response.Position
             }
             localStorage.setItem("account", JSON.stringify(data));
             loginContext(data)
-        
             history.push('/medigood');
         } 
 

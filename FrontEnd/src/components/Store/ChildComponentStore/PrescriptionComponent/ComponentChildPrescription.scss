@@ -56,6 +56,11 @@
         .input-name-customer {
             padding-left: 12px;
         }
+        
+    }
+    .input-point {
+        padding-left: 8px;
+        outline: none;
     }
     .line {
         height: 1px;
@@ -92,7 +97,7 @@
     }
 }
 
-.form-confirm-order, .history-prescription {
+.form-confirm-order, .history-prescription, .form-create-customer {
     .form-customer {
         .input-container {
             position: relative;
@@ -104,14 +109,13 @@
                 pointer-events: none; /* Đảm bảo biểu tượng không thể chọn */
                 font-size: 24px;
             }
-            .input-customer {
-                height: 38px;
-                border: 1px 0 0 rgb(161, 161, 160);
-                outline: none;
-            }
-            .input-customer {
-                padding-left: 36px; /* Đảm bảo khoảng cách giữa biểu tượng và input */
-            }
+        }
+        .input-customer {
+            height: 38px;
+            border: 1px 0 0 rgb(161, 161, 160);
+            outline: none !important;
+            padding-left: 36px; /* Đảm bảo khoảng cách giữa biểu tượng và input */
+
         }
     }
 }
@@ -148,15 +152,10 @@
             tbody tr:not(:last-child) {
                 border-bottom: 1px solid #ddd; /* Màu và kiểu đường kẻ bạn có thể điều chỉnh tùy ý */
             }
-            tbody tr a td {
+            tbody tr  td {
                 vertical-align: middle;
             }
-            tbody a .td-detail {
-                float: right;
-                vertical-align: middle ;
-            }
-
-
+           
         }
     }
     .paginate {
@@ -175,7 +174,7 @@
         flex: 1;
     }
     .infor-prescription {
-        flex: 3;
+        flex: 2;
         height: fit-content;
         .infor-prescription-body {
             flex-wrap: nowrap;
@@ -199,6 +198,11 @@
             .table-head {
                 background-color: #F3F4F5;
             }
+            thead, tbody {
+                .text-right {
+                    text-align: right;
+                }
+            }
             tbody {
                 .cell-img {
                     width: 120px;
@@ -206,15 +210,34 @@
                 .img-medic {
                     width: 120px;
                 }
+                
+                tr:hover {
+                    background-color: lightgrey;
+                }
             }
         }
+        .group-total {
+            padding: 16px;
+            .listItem {
+                justify-content: space-between;
+            }
+            
+            .listItemText {
+                /* Bạn có thể thêm các quy tắc CSS tùy chỉnh cho phần tử này nếu cần */
+            }
+            
+            .text-item {
+                text-align: right; /* Căn phải văn bản bên trong */
+            }
+        }
+        
+       
     }
 }
 
 
 .background-white {
     background: #ffffff !important;
-    box-shadow: 0 0 5px rgba(139, 139, 139, 0.5);
 }
 
 

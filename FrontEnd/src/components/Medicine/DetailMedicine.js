@@ -1,6 +1,6 @@
 import { useEffect, useContext, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { useUser } from '../../views/UserContext';
+import { UserContext } from '../../views/UserContext';
 import NavCategory from './NavCategory';
 import './Medicine.scss';
 import '../style.scss';
@@ -11,7 +11,7 @@ import ModalDeleteEmployee from '../ModalDeleteEmployee';
 const DetailMedicine = () => {
     const location = useLocation();
     const { medicineId, medicineDetailName } = location.state;
-    const { user } = useUser();
+    const { user } = useContext(UserContext);
     const history = useHistory();
     const [medicineData, setMedicneData] = useState({});
     const [priceByUnit, setPriceByUnit] = useState('');

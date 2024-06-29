@@ -8,7 +8,8 @@ const PrescriptionDetail = new Schema (
         MedicineId: {type: Number},
         MedicineName: {type: String},
         TotalPrice: {type: Number},
-        Quantity: {type: Number}
+        Quantity: {type: Number},
+        Unit: {type: Number},
     }
 )
 

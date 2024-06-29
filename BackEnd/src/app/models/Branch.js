@@ -4,7 +4,9 @@ const Schema = mongoose.Schema;
 const Branch = new Schema (
     {
         Id: {type: String, required: true, unique: true},
-        Name: {type: String, required: true},
+        Address: {type: String, required: true},
+        ObjectStatus: {type: Number, default: 4},
+        Status: {type: Number, default: 1},
         Description : {type: String},
     },{
         timestamps: true,

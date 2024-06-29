@@ -1,0 +1,74 @@
+.report-container {
+    margin-top: 60px;
+    background-color: #f1f0f0;
+    min-height: 93.5vh;
+    max-height: fit-content;
+    .chart-container {
+        overflow-x: auto;  /* Kích hoạt thanh trượt ngang */
+        .chart {
+            display: flex;
+            justify-content: center; /* Canh giữa theo chiều ngang */
+            align-items: center;    /* Canh giữa theo chiều dọc */
+            
+        }
+        canvas {
+            width: 80% !important;
+            height: 60% !important;
+        }
+
+        .table-report, .table-report-medicine {
+            display: flex;
+            justify-content: center;
+            margin-left: auto;
+            margin-right: auto;
+           
+            table {
+                width: 80%;
+                thead {
+                    background-color: lightgrey;
+                    height: 48px ;
+                    th {
+                        width: calc(100% / 3);
+                    }
+                }
+                tbody {
+                    background-color: white;
+                    tr {
+                        height: 48px;
+                    }
+                    tr:not(:last-child) {
+                        border-bottom: 1px solid #ddd; /* Màu và kiểu đường kẻ bạn có thể điều chỉnh tùy ý */
+                    }
+                    .table-row {
+                        transition: background-color 0.3s ease;
+                    }
+                    
+                    .table-row:hover {
+                        background-color: lightgrey;
+                        cursor: pointer;
+                    }
+                    
+                }
+            }
+        }
+
+        .table-report-medicine{
+            justify-content: center; /* Canh giữa theo chiều ngang */
+            align-items: center;    /* Canh giữa theo chiều dọc */
+            table {
+                width: 100%;
+                thead {
+                    th {
+                        width: calc(100% / 5);
+                    }
+                }
+                .th-value {
+                    text-align: right;
+                    padding-right: 16px;
+                }
+            }
+        }
+    }
+}
+
+

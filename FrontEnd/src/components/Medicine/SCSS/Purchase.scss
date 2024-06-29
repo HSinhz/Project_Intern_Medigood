@@ -1,0 +1,50 @@
+.import-goods {
+    background-color: white !important;
+    width: 100%;
+    min-height: 90% ;
+    table {
+        thead {
+            th {
+                width: calc(100% / 6);
+            }
+            
+        }
+
+        thead, tbody {
+            .th-value {
+                text-align: right;
+            }
+        }
+        tbody {
+            tr {
+                height: 48px;
+            }
+            tr:not(:last-child) {
+                border-bottom: 1px solid #ddd; /* Màu và kiểu đường kẻ bạn có thể điều chỉnh tùy ý */
+            }
+            .table-row {
+                transition: background-color 0.3s ease;
+            }
+            
+            .table-row:hover {
+                background-color: lightgrey;
+                cursor: pointer;
+            }
+            .status-success {
+                background-color: rgb(214, 255, 220);
+                border: 1px solid rgb(14, 170, 0);
+                color:  rgb(14, 170, 0);
+            }
+            .status-loading, .status-success {
+                padding: 2px 10px;
+                border-radius: 50px;
+            }
+            .status-loading {
+                background-color: rgb(250, 255, 178);
+                border: 1px solid rgb(187, 162, 0);
+                color:  rgb(187, 162, 0);
+            }
+        }
+        
+    }
+}

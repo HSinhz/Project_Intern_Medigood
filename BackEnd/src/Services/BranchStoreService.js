@@ -45,6 +45,8 @@ const getMedicineBranch = async (Email, BranchId) => {
                             MedicineId: 1,
                             BranchId: 1,
                             Quantity: 1,
+                            Stock: 1,
+                            Inventory: 1,
                             MedicineName: "$MedicineInfor.MedicineName",
                             Price: "$MedicineInfor.Price",
                             UnitId: "$MedicineInfor.Unit",
@@ -114,23 +116,23 @@ const getStoreWithId = async (Email, BranchId) => {
 
 const createOrder = async (Email, BranchId, PersonnelId ,dataOrder) => {
     try {
+
         console.log("dataOrder: ", dataOrder)
         let existPersonnel = await checkExistPersonnel(Email);
         if(existPersonnel.Success === true){
             let existBranch = await checkExistBranch(BranchId);
             if( existBranch.Success === true){
                 let existCustomer = await checkExistCustomer(dataOrder.phoneCustomer);
-                console.log('existCustomer: ', existCustomer)
                 if(existCustomer.Success === false){
                     dataOrder.phoneCustomer = '';
                 } 
                 let PrescriptionId = createIdPrescription();
-                console.log("PrescriptionId: ", PrescriptionId);
                 const newPrescription = new Prescription({
                     PrescriptionId: PrescriptionId,
                     BranchId: BranchId,
                     EmployeeId: PersonnelId,
                     CustomerPhone: dataOrder.phoneCustomer,
+                    TotalDiscount: dataOrder.totalDiscount,
                     Total: dataOrder.total
                 })
                 let savePrescription = await newPrescription.save();
@@ -138,27 +140,23 @@ const createOrder = async (Email, BranchId, PersonnelId ,dataOrder) => {
                     let sure = false;
                     // Lưu chi tiết đơn thuốc
                     for (let index = 0; index < dataOrder.orderItems.length; index++) {
-                        console.log("dataOrder.orderItems: ", dataOrder.orderItems)
                         let detailPres = await new PrescriptionDetail({
                             MedicineId: dataOrder.orderItems[index].medicineId,
                             PrescriptionId: savePrescription.PrescriptionId,
                             MedicineName: dataOrder.orderItems[index].medicineName,
                             Quantity: dataOrder.orderItems[index].quantity,
-                            TotalPrice: dataOrder.orderItems[index].totalPrice
+                            TotalPrice: dataOrder.orderItems[index].totalPrice,
+                            Unit: dataOrder.orderItems[index].unitId
                         }).save().then(() => [console.log("Đã lưu tất cả"), sure = true])
                     }
 
 
                     // Cập nhật điểm cho khách hàng
                     if(dataOrder.point > 0 ){
-                        console.log('dataOrder.point: ', dataOrder.point )
-                        console.log("dataOrder.phoneCustome: ", dataOrder.phoneCustomer)
                         await Customer.updateOne({CustomerPhone: dataOrder.phoneCustomer},{
                             Point: dataOrder.point
                         }).then(() =>[ console.log("Đã cập nhật điểm thành công"), sure = true]);
                     }
-
-                    console.log("sure: ", sure);
                     if( sure === true ){
                         return {
                             Success: true,
@@ -271,27 +269,7 @@ const fetchPrescriptionDetail = async (Email, BranchId, PrescriptionId) => {
                         }
                     }, {
                         $unwind: "$PersonnelInfor"
-                    } ,  
-                    {
-                        $lookup: {
-                            from : "prescriptiondetails",
-                            localField: 'PrescriptionId',
-                            foreignField: 'PrescriptionId',
-                            as: "DetailInfor"
-                        }
-                    } , {
-                        $unwind: "$DetailInfor"
-                    } , 
-                    {
-                        $lookup: {
-                            from:  'medicines',
-                            localField: 'DetailInfor.MedicineId',
-                            foreignField: 'MedicineId',
-                            as: "MedicineInfor"
-                        }
-                    } , {
-                        $unwind : "$MedicineInfor"
-                    } , 
+                    } ,
                     {
                         $project: {
                             PrescriptionId: 1,
@@ -299,21 +277,72 @@ const fetchPrescriptionDetail = async (Email, BranchId, PrescriptionId) => {
                             EmployeeFirstName: '$PersonnelInfor.FirstName',
                             CustomerName: '$CustomerInfo.CustomerName',
                             CustomerPhone: 1,
+                            Point: "$CustomerInfo.Point",
                             Total: 1,
+                            TotalDiscount: 1,
+                            createdAt: 1,
                             AddressBranch: '$BranchInfor.Address',
-                            MedicineImg: '$MedicineInfor.ImgUrl',
-                            MedicineId: '$MedicineInfor.MedicineId',
-                            MedicineName: '$MedicineInfor.MedicineName',
-                            MedicinePrice: '$MedicineInfor.Price',
-                            Quantity: "$DetailInfor.Quantity",
                         }
                     }
                 ])
+                
+
                 if(dataPrescription ){
+                    let detailPrescription = await PrescriptionDetail.aggregate([
+                        {
+                            $match: {
+                                PrescriptionId: PrescriptionId
+                            }
+                        } , {
+                            $lookup: {
+                                from: 'medicines',
+                                localField: 'MedicineId',
+                                foreignField: 'MedicineId',
+                                as: 'MedicineInfor'
+                            }
+                        }, {
+                            $unwind: "$MedicineInfor"
+                        }, {
+                            $lookup: {
+                                from: 'units',
+                                localField: 'Unit',
+                                foreignField: 'Id',
+                                as: 'UnitInfor'
+                            }
+                        }, {
+                            $unwind: "$UnitInfor"
+                        }, {
+                            $lookup: {
+                                from: 'units',
+                                localField: 'MedicineInfor.Unit',
+                                foreignField: 'Id',
+                                as: 'UnitInfor2'
+                            }
+                        }, {
+                            $unwind: "$UnitInfor2"
+                        }, {
+                            $project: {
+                                MedicineId: 1,
+                                Quantity: 1,
+                                Unit: 1,
+                                TotalPrice: 1,
+                                UnitMain: '$MedicineInfor.Unit',
+                                MedicineName: '$MedicineInfor.MedicineName',
+                                MedicinePrice: '$MedicineInfor.Price',
+                                MedicineUnit: '$MedicineInfor.Unit',
+                                MedicneImg: '$MedicineInfor.ImgUrl',
+                                ViePerBox: '$MedicineInfor.ViePerBox',
+                                ViePerBlis: '$MedicineInfor.ViePerBlis',
+                                UnitNameOrder: '$UnitInfor.UnitName',
+                                UnitNameMain: '$UnitInfor2.UnitName'
+                            }
+                        }
+                    ])
+                    dataPrescription[0].detailMedic = detailPrescription;
                     return {
                         Success: true,
                         Type: OK,
-                        Data: dataPrescription
+                        Data: dataPrescription[0]
                     }
                 }
                 return {
@@ -334,10 +363,12 @@ const fetchPrescriptionDetail = async (Email, BranchId, PrescriptionId) => {
         }
     }
 }
+
+
 module.exports = {
     getStoreWithId: getStoreWithId,
     getMedicineBranch: getMedicineBranch,
     createOrder: createOrder,
     fetchDataPrescription: fetchDataPrescription,
-    fetchPrescriptionDetail: fetchPrescriptionDetail
+    fetchPrescriptionDetail: fetchPrescriptionDetail,
 }
